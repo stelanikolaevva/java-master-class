@@ -34,10 +34,10 @@ public class CarBookingService {
     }
 
     /**
-     * @param user who is booking the car
-     * @param car which car he is booking
+     * @param user      who is booking the car
+     * @param car       which car he is booking
      * @param startDate - start of the booking period
-     * @param endDate - end of the booking period
+     * @param endDate   - end of the booking period
      * @throws CarAlreadyBookedException - if the car is already booked
      */
     public void bookCar(User user, Car car, LocalDate startDate, LocalDate endDate) throws CarAlreadyBookedException {
@@ -48,7 +48,7 @@ public class CarBookingService {
         }
 
         //Calculate the price for the days the car will be rented.
-        BigDecimal daysRented = BigDecimal.valueOf(ChronoUnit.DAYS.between(startDate, endDate));
+        BigDecimal daysRented = BigDecimal.valueOf(ChronoUnit.DAYS.between(startDate, endDate) + 1);
         BigDecimal totalCostForCar = car.getRentalPricePerDay().multiply(daysRented);
 
         CarBooking carBooking = new CarBooking(user, car, startDate, endDate, totalCostForCar);

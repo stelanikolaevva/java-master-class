@@ -10,7 +10,7 @@ public class DatesUtil {
     /**
      * @param startDate - user input
      * @param endDate - user input
-     * @return if start date is after end date which is invalid
+     * @return true if the start date is after the end date, same dates are allowed
      */
     public static boolean isStartDateAfterEndDate(LocalDate startDate, LocalDate endDate) {
         return startDate.isAfter(endDate);
