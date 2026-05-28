@@ -17,8 +17,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import static com.stela.util.ArraysUtil.*;
-import static com.stela.util.DatesUtil.isStartDateAfterEndDate;
 import static com.stela.util.DatesUtil.isCarAvailableForPeriod;
+import static com.stela.util.DatesUtil.isStartDateAfterEndDate;
 import static com.stela.util.MenuUtil.*;
 
 public class Main {
@@ -39,14 +39,14 @@ public class Main {
     private static final CarService carService = new CarService();
     private static final CarBookingService carBookingService = new CarBookingService();
 
-   public static void main(String[] args) {
+    public static void main(String[] args) {
 
         var scanner = new Scanner(System.in);
         System.out.println("=== Welcome to Car Bookings ===");
 
         var option = printMenuAndSelectOption(scanner);
         while (option != 8) {
-
+            boolean validOption = true;
             switch (option) {
                 case 1 -> bookACar(scanner);
                 case 2 -> deleteBooking(scanner);
@@ -55,12 +55,16 @@ public class Main {
                 case 5 -> printAvailableCars(scanner);
                 case 6 -> printAvailableElectricCars(scanner);
                 case 7 -> printAllUsers();  //done
-                default -> System.out.println("Invalid option. Try again.");
-
+                default -> {
+                    System.out.println("Invalid option. Please try again:");
+                    validOption = false;
+                    option = selectOption(scanner);
+                }
             }
-            goBack(scanner);
-            option = printMenuAndSelectOption(scanner);
-
+            if (validOption) {
+                goBack(scanner);
+                option = printMenuAndSelectOption(scanner);
+            }
         }
         System.out.println("Goodbye!");
     }
@@ -170,14 +174,13 @@ public class Main {
         Car[] availableCars = new Car[availableCarsCount];
 
         int index = 0;
-            for (Car car : cars) {
-                if (isCarAvailableForPeriod(bookings, car, startDate, endDate)) {
-                    availableCars[index++] = car;
-                }
+        for (Car car : cars) {
+            if (isCarAvailableForPeriod(bookings, car, startDate, endDate)) {
+                availableCars[index++] = car;
             }
-            return availableCars;
+        }
+        return availableCars;
     }
-
 
 
     private static Car[] getAvailableElectricCars(LocalDate startDate, LocalDate endDate) {

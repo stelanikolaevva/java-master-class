@@ -24,17 +24,26 @@ public class MenuUtil {
             """;
 
     /**
+     * Print the menu and returns the option
      * @param scanner the scanner instance used to capture user input
      * @return selected number option from the user
      */
     public static int printMenuAndSelectOption(Scanner scanner) {
         System.out.println(MENU);
+        return selectOption(scanner);
+    }
+
+    /**
+     * @param scanner the scanner instance used to capture user input
+     * @return selected number option from the user
+     */
+    public static int selectOption(Scanner scanner) {
         while (true) {
             String input = scanner.nextLine().trim();
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Not a valid input. Please try again:");
+                System.out.println("Invalid option. Please try again:");
             }
         }
     }
@@ -104,7 +113,7 @@ public class MenuUtil {
             try {
                 String line = scanner.nextLine().trim();
                 LocalDate date = LocalDate.parse(line, formatter);
-                if(date.isBefore(LocalDate.now())) {
+                if (date.isBefore(LocalDate.now())) {
                     System.out.println("Date must be in the future. Please try again:");
                     continue;
                 }
