@@ -1,5 +1,6 @@
 package com.stela.user;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -8,6 +9,6 @@ import java.util.UUID;
 public class UserNotFoundException extends Exception {
 
     public UserNotFoundException(String message, UUID userId) {
-        super(String.format(message, userId.toString()));
+        super(String.format(message, userId));
     }
 }

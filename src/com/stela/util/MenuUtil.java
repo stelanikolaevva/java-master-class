@@ -79,11 +79,11 @@ public class MenuUtil {
      * @return Booking Data object with the inputs from the user
      */
     public static BookingData readBookingDataInput(Scanner scanner) {
-        System.out.println("Enter User UUID:");
-        var userID = readUUID(scanner);
+        System.out.println("Enter User UUID or q to quit:");
+        var userID = readUUIDOrQuit(scanner);
 
-        System.out.println("Enter Car UUID:");
-        var carSelection = readUUID(scanner);
+        System.out.println("Enter Car UUID or q to quit:");
+        var carSelection = readUUIDOrQuit(scanner);
 
         System.out.println("Enter start date (dd/MM/yyyy):");
         var startDate = readLocalDate(scanner);
@@ -91,20 +91,6 @@ public class MenuUtil {
         System.out.println("Enter end date (dd/MM/yyyy):");
         var endDate = readLocalDate(scanner);
         return new BookingData(userID, carSelection, startDate, endDate);
-    }
-
-    /**
-     * @param scanner the scanner instance used to capture user input
-     * @return a valid UUID inputted from the user
-     */
-    private static UUID readUUID(Scanner scanner) {
-        while (true) {
-            try {
-                return UUID.fromString(scanner.nextLine().trim());
-            } catch (IllegalArgumentException e) {
-                System.out.println("Invalid UUID. Please try again:");
-            }
-        }
     }
 
     /**

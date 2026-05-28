@@ -8,7 +8,7 @@ import java.util.UUID;
 public class CarNotFoundException extends Exception {
 
     public CarNotFoundException(String message, UUID carId) {
-        super(String.format(message, carId.toString()));
+        super(String.format(message, carId));
     }
 
     public CarNotFoundException(String message) {
