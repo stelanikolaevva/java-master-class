@@ -17,7 +17,7 @@ public class UserService {
     /**
      * @return an array of all users
      */
-    public User[] getAllUser() {
+    public User[] getAllUsers() {
         return userDao.getUsers();
     }
 }

@@ -3,7 +3,7 @@ package com.stela.car;
 import java.util.UUID;
 
 public class CarService {
-    private final CarDao carDao  = new CarDao();
+    private final CarDao carDao = new CarDao();
 
     /**
      * @param id the car id

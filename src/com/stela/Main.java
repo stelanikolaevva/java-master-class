@@ -2,7 +2,6 @@ package com.stela;
 
 import com.stela.booking.BookingData;
 import com.stela.booking.BookingNotFoundException;
-import com.stela.booking.CarBooking;
 import com.stela.booking.CarBookingService;
 import com.stela.car.Car;
 import com.stela.car.CarAlreadyBookedException;
@@ -16,8 +15,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static com.stela.util.ArraysUtil.*;
-import static com.stela.util.DatesUtil.isCarAvailableForPeriod;
+import static com.stela.util.ArraysUtil.printFormatedArrayOutput;
 import static com.stela.util.DatesUtil.isStartDateAfterEndDate;
 import static com.stela.util.MenuUtil.*;
 
@@ -139,7 +137,7 @@ public class Main {
         System.out.println("Please select the end date (dd/mm/yyyy) for the period you are searching for:");
         LocalDate endDate = readLocalDate(scanner);
 
-        printFormatedArrayOutput(Arrays.toString(getAvailableCars(startDate, endDate)));
+        printFormatedArrayOutput(Arrays.toString(carBookingService.getAvailableCars(startDate, endDate)));
     }
 
 
@@ -152,50 +150,17 @@ public class Main {
         System.out.println("Please select the end date (dd/mm/yyyy) for the period you are searching for:");
         LocalDate endDate = readLocalDate(scanner);
 
-        printFormatedArrayOutput(Arrays.toString(getAvailableElectricCars(startDate, endDate)));
+        printFormatedArrayOutput(Arrays.toString(carBookingService.getAvailableElectricCars(startDate, endDate)));
     }
 
     private static void printAllUsers() {
         System.out.println("--- Users in system ---");
 
-        var usersInSystem = userService.getAllUser();
+        var usersInSystem = userService.getAllUsers();
         if (usersInSystem.length > 0) {
             printFormatedArrayOutput(Arrays.toString(usersInSystem));
         } else {
             System.out.println("No users present!");
         }
     }
-
-    private static Car[] getAvailableCars(LocalDate startDate, LocalDate endDate) {
-        CarBooking[] bookings = carBookingService.getBookings();
-        Car[] cars = carService.getCars();
-
-        int availableCarsCount = getAvailableCarsCount(bookings, cars, startDate, endDate);
-        Car[] availableCars = new Car[availableCarsCount];
-
-        int index = 0;
-        for (Car car : cars) {
-            if (isCarAvailableForPeriod(bookings, car, startDate, endDate)) {
-                availableCars[index++] = car;
-            }
-        }
-        return availableCars;
-    }
-
-
-    private static Car[] getAvailableElectricCars(LocalDate startDate, LocalDate endDate) {
-        Car[] availableCars = getAvailableCars(startDate, endDate);
-
-        int availableElectricCarCount = getElectricCarsCount(availableCars);
-        Car[] availableElectricCars = new Car[availableElectricCarCount];
-
-        int index = 0;
-        for (Car car : availableCars) {
-            if (car.isElectric()) {
-                availableElectricCars[index++] = car;
-            }
-        }
-        return availableElectricCars;
-    }
-
 }

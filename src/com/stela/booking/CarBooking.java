@@ -73,12 +73,12 @@ public class CarBooking {
 
     @Override
     public String toString() {
-        return "id: " + id + "\n"+
-                "Booked by: " + user.getName() + "\n"+
-                "Car: " + car.getRegNumber() + "\n"+
-                "From: " + startDate +", to: " + endDate + "\n"+
-                "Total cost: " + price + "$\n"+
-                "Status: " + status + "\n"+
+        return "id: " + id + "\n" +
+                "Booked by: " + user.getName() + "\n" +
+                "Car: " + car.getRegNumber() + "\n" +
+                "From: " + startDate + ", to: " + endDate + "\n" +
+                "Total cost: " + price + "$\n" +
+                "Status: " + status + "\n" +
                 "Booked at: " + bookedAt.format(DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")) + "\n\n";
     }
 

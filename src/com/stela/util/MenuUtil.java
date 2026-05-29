@@ -25,6 +25,7 @@ public class MenuUtil {
 
     /**
      * Print the menu and returns the option
+     *
      * @param scanner the scanner instance used to capture user input
      * @return selected number option from the user
      */
@@ -50,6 +51,7 @@ public class MenuUtil {
 
     /**
      * Waits for the user to select B or b to go back to main menu
+     *
      * @param scanner the scanner instance used to capture user input
      */
     public static void goBack(Scanner scanner) {

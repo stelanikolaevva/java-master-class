@@ -25,10 +25,11 @@ public class ArraysUtil {
 
     /**
      * used for array initialization
-     * @param bookings all car bookings
-     * @param allCars all cars
+     *
+     * @param bookings  all car bookings
+     * @param allCars   all cars
      * @param startDate the start date of the period we should check for availability
-     * @param endDate - the end date
+     * @param endDate   - the end date
      * @return - total available cars count
      */
     public static int getAvailableCarsCount(CarBooking[] bookings, Car[] allCars, LocalDate startDate, LocalDate endDate) {
@@ -43,6 +44,7 @@ public class ArraysUtil {
 
     /**
      * used for array initialization
+     *
      * @param availableCars total cars array
      * @return the count of the electric cars
      */
@@ -58,8 +60,9 @@ public class ArraysUtil {
 
     /**
      * used for array initialization
-     * @param bookings All car booking
-     * @param userId - user which car we should search for
+     *
+     * @param bookings - all car bookings
+     * @param userId   - user which car we should search for
      * @return - the number of cars he had booked
      */
     public static int getUserCarsCount(CarBooking[] bookings, UUID userId) {

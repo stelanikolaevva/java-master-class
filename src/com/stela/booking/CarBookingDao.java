@@ -5,7 +5,7 @@ import java.util.UUID;
 import static com.stela.util.MenuUtil.MAX_INDEX;
 
 public class CarBookingDao {
-    public static final CarBooking[] carBookings = new CarBooking[MAX_INDEX];
+    private static final CarBooking[] carBookings = new CarBooking[MAX_INDEX];
     private static int currentIndex = 0;
 
     /**
@@ -47,19 +47,19 @@ public class CarBookingDao {
     }
 
     /**
-     * @param booking the booking that will be set to status CANCELLED
-     * @throws BookingNotFoundException - if no such booking exists
+     * @param bookingId - the booking id that will be set to status CANCELLED
+     * @throws BookingNotFoundException - if no such booking exists or if it already canceled
      */
-    public void deleteBooking(CarBooking booking) throws BookingNotFoundException {
+    public void deleteBooking(UUID bookingId) throws BookingNotFoundException {
         for (CarBooking carBooking : carBookings) {
-            if (carBooking != null && carBooking.equals(booking)) {
+            if (carBooking != null && carBooking.getId().equals(bookingId)) {
                 if (carBooking.getStatus().equals(BookingStatus.CANCELLED)) {
-                    throw new BookingNotFoundException("Booking %s already cancelled", booking.getId());
+                    throw new BookingNotFoundException("Booking %s already cancelled", bookingId);
                 }
                 carBooking.setStatus(BookingStatus.CANCELLED);
                 return;
             }
         }
-        throw new BookingNotFoundException("Booking with id %s not found!", booking.getId());
+        throw new BookingNotFoundException("Booking with id %s not found!", bookingId);
     }
 }

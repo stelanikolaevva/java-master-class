@@ -1,6 +1,5 @@
 package com.stela.user;
 
-import java.util.Optional;
 import java.util.UUID;
 
 public class UserDao {
@@ -16,6 +15,7 @@ public class UserDao {
                 new User(UUID.fromString("37f04d98-9c09-495b-870f-52b322b676dc"), "Boyan"),
         };
     }
+
     /**
      * @return an array of all users
      */

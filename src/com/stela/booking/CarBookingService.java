@@ -3,6 +3,7 @@ package com.stela.booking;
 import com.stela.car.Car;
 import com.stela.car.CarAlreadyBookedException;
 import com.stela.car.CarNotFoundException;
+import com.stela.car.CarService;
 import com.stela.user.User;
 
 import java.math.BigDecimal;
@@ -11,11 +12,14 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static com.stela.util.ArraysUtil.getUserCarsCount;
+import static com.stela.util.ArraysUtil.getElectricCarsCount;
+import static com.stela.util.ArraysUtil.getAvailableCarsCount;
 import static com.stela.util.DatesUtil.isCarAvailableForPeriod;
 
 
 public class CarBookingService {
     private final CarBookingDao carBookingDao = new CarBookingDao();
+    private final CarService carService = new CarService();
 
     /**
      * @return all bookings
@@ -29,8 +33,7 @@ public class CarBookingService {
      * @throws BookingNotFoundException - if no such booking exists
      */
     public void deleteBooking(UUID bookingId) throws BookingNotFoundException {
-        CarBooking booking = carBookingDao.findBookingById(bookingId);
-        carBookingDao.deleteBooking(booking);
+        carBookingDao.deleteBooking(bookingId);
     }
 
     /**
@@ -76,9 +79,45 @@ public class CarBookingService {
         }
         return carsForUser;
     }
+
+    /**
+     * @param startDate start of period
+     * @param endDate   end of period
+     * @return an array of the available cars for that period
+     */
+    public Car[] getAvailableCars(LocalDate startDate, LocalDate endDate) {
+        CarBooking[] bookings = getBookings();
+        Car[] cars = carService.getCars();
+
+        int availableCarsCount = getAvailableCarsCount(bookings, cars, startDate, endDate);
+        Car[] availableCars = new Car[availableCarsCount];
+
+        int index = 0;
+        for (Car car : cars) {
+            if (isCarAvailableForPeriod(bookings, car, startDate, endDate)) {
+                availableCars[index++] = car;
+            }
+        }
+        return availableCars;
+    }
+
+    /**
+     * @param startDate start of period
+     * @param endDate   end of period
+     * @return an array of the available electric cars for that period
+     */
+    public Car[] getAvailableElectricCars(LocalDate startDate, LocalDate endDate) {
+        Car[] availableCars = getAvailableCars(startDate, endDate);
+
+        int availableElectricCarCount = getElectricCarsCount(availableCars);
+        Car[] availableElectricCars = new Car[availableElectricCarCount];
+
+        int index = 0;
+        for (Car car : availableCars) {
+            if (car.isElectric()) {
+                availableElectricCars[index++] = car;
+            }
+        }
+        return availableElectricCars;
+    }
 }
-
-
-
-
-
