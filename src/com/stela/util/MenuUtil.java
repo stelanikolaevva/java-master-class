@@ -1,6 +1,6 @@
 package com.stela.util;
 
-import com.stela.booking.BookingData;
+import com.stela.booking.CarBooking;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class MenuUtil {
-    public final static int MAX_INDEX = 16;
+    private static final Scanner SCANNER = new Scanner (System.in);
 
     private final static String MENU = """
             1 - Book Car
@@ -26,21 +26,19 @@ public class MenuUtil {
     /**
      * Print the menu and returns the option
      *
-     * @param scanner the scanner instance used to capture user input
      * @return selected number option from the user
      */
-    public static int printMenuAndSelectOption(Scanner scanner) {
+    public static int printMenuAndSelectOption() {
         System.out.println(MENU);
-        return selectOption(scanner);
+        return selectOption();
     }
 
     /**
-     * @param scanner the scanner instance used to capture user input
      * @return selected number option from the user
      */
-    public static int selectOption(Scanner scanner) {
+    public static int selectOption() {
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = SCANNER.nextLine().trim();
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
@@ -51,14 +49,12 @@ public class MenuUtil {
 
     /**
      * Waits for the user to select B or b to go back to main menu
-     *
-     * @param scanner the scanner instance used to capture user input
      */
-    public static void goBack(Scanner scanner) {
+    public static void goBack() {
         //Option to go back to main menu
         System.out.println("Press b to go back to main menu:");
         while (true) {
-            var input = scanner.nextLine().trim();
+            var input = SCANNER.nextLine().trim();
             if (input.equalsIgnoreCase("b")) {
                 break;
             }
@@ -66,54 +62,51 @@ public class MenuUtil {
     }
 
     /**
-     * @param scanner the scanner instance used to capture user input
      * @return a valid UUID inputted from the user or null if the user quit
      */
-    public static UUID readUUIDOrQuit(Scanner scanner) {
+    public static UUID readUUIDOrGoBack() {
         UUID id = null;
         while (id == null) {
             try {
-                var input = scanner.nextLine().trim();
-                if ("q".equalsIgnoreCase(input)) break;
+                var input = SCANNER.nextLine().trim();
+                if ("b".equalsIgnoreCase(input)) break;
                 else {
                     id = UUID.fromString(input.trim());
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid UUID. Please try again or q to quit:");
+                System.out.println("Invalid UUID. Please try again or b to go back:");
             }
         }
         return id;
     }
 
     /**
-     * @param scanner the scanner instance used to capture user input
      * @return Booking Data object with the inputs from the user
      */
-    public static BookingData readBookingDataInput(Scanner scanner) {
+    public static CarBooking readCarBookingRequestInput() {
         System.out.println("Enter User UUID or q to quit:");
-        var userID = readUUIDOrQuit(scanner);
+        var userID = readUUIDOrGoBack();
 
         System.out.println("Enter Car UUID or q to quit:");
-        var carSelection = readUUIDOrQuit(scanner);
+        var carSelection = readUUIDOrGoBack();
 
         System.out.println("Enter start date (dd/MM/yyyy):");
-        var startDate = readLocalDate(scanner);
+        var startDate = readLocalDate();
 
         System.out.println("Enter end date (dd/MM/yyyy):");
-        var endDate = readLocalDate(scanner);
-        return new BookingData(userID, carSelection, startDate, endDate);
+        var endDate = readLocalDate();
+        return new CarBooking(userID, carSelection, startDate, endDate);
     }
 
     /**
-     * @param scanner the scanner instance used to capture user input
      * @return a valid LocalDate inputted from the user
      */
-    public static LocalDate readLocalDate(Scanner scanner) {
+    public static LocalDate readLocalDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         while (true) {
             try {
-                String line = scanner.nextLine().trim();
+                String line = SCANNER.nextLine().trim();
                 LocalDate date = LocalDate.parse(line, formatter);
                 if (date.isBefore(LocalDate.now())) {
                     System.out.println("Date must be in the future. Please try again:");

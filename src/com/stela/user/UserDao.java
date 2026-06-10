@@ -25,16 +25,14 @@ public class UserDao {
 
     /**
      * @param userId of the user
-     * @return the user with selected id
-     * @throws UserNotFoundException - when the user is not found
+     * @return the user with selected id or else null
      */
-    public User findUserById(UUID userId) throws UserNotFoundException {
+    public User findUserById(UUID userId) {
         for (User user : users) {
             if (user.getId().equals(userId)) {
                 return user;
             }
         }
-
-        throw new UserNotFoundException("User with id %s not found", userId);
+        return null;
     }
 }

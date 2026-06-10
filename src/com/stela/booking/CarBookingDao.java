@@ -1,11 +1,12 @@
 package com.stela.booking;
 
+import java.util.Arrays;
 import java.util.UUID;
 
-import static com.stela.util.MenuUtil.MAX_INDEX;
-
 public class CarBookingDao {
-    private static final CarBooking[] carBookings = new CarBooking[MAX_INDEX];
+    private static int maxIndex = 1;
+    private static CarBooking[] carBookings = new CarBooking[maxIndex];
+
     private static int currentIndex = 0;
 
     /**
@@ -23,16 +24,15 @@ public class CarBookingDao {
 
     /**
      * @param id the booking id
-     * @return the Booking object with that id
-     * @throws BookingNotFoundException - if no such booking is found
+     * @return the Booking object with that id or null if not present
      */
-    public CarBooking findBookingById(UUID id) throws BookingNotFoundException {
+    public CarBooking findBookingById(UUID id) {
         for (CarBooking booking : carBookings) {
             if (booking != null && booking.getId().equals(id)) {
                 return booking;
             }
         }
-        throw new BookingNotFoundException("Booking with id %s not found!", id);
+        return null;
     }
 
 
@@ -40,26 +40,18 @@ public class CarBookingDao {
      * @param carBooking the new booking that will be added in the system
      */
     public void saveBooking(CarBooking carBooking) {
-        if (currentIndex == MAX_INDEX) {
-            throw new IllegalArgumentException("Booking storage full!");
+        if (currentIndex == maxIndex) {
+            maxIndex = maxIndex * 2;
+            carBookings = Arrays.copyOf(carBookings, maxIndex);
         }
         carBookings[currentIndex++] = carBooking;
     }
 
     /**
-     * @param bookingId - the booking id that will be set to status CANCELLED
-     * @throws BookingNotFoundException - if no such booking exists or if it already canceled
+     * @param booking - the booking id that will be set to status CANCELLED
      */
-    public void deleteBooking(UUID bookingId) throws BookingNotFoundException {
-        for (CarBooking carBooking : carBookings) {
-            if (carBooking != null && carBooking.getId().equals(bookingId)) {
-                if (carBooking.getStatus().equals(BookingStatus.CANCELLED)) {
-                    throw new BookingNotFoundException("Booking %s already cancelled", bookingId);
-                }
-                carBooking.setStatus(BookingStatus.CANCELLED);
-                return;
-            }
-        }
-        throw new BookingNotFoundException("Booking with id %s not found!", bookingId);
+    public boolean deleteBooking(CarBooking booking) {
+        booking.setStatus(BookingStatus.CANCELLED);
+        return true;
     }
 }

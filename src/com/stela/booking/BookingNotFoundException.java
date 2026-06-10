@@ -3,9 +3,9 @@ package com.stela.booking;
 import java.util.UUID;
 
 /**
- * Custom checked exception when the booking is not found
+ * Custom unchecked exception when the booking is not found
  */
-public class BookingNotFoundException extends Exception {
+public class BookingNotFoundException extends RuntimeException {
 
     public BookingNotFoundException(String message, UUID id) {
         super(String.format(message, id));

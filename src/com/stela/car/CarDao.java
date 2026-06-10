@@ -40,18 +40,16 @@ public class CarDao {
     }
 
     /**
-     * @param id - the id of the car
-     * @return the car for the selected id
-     * @throws CarNotFoundException - if the car is not found
+     * @param carId - the id of the car
+     * @return the car for the selected id or else null
      */
-    public Car findCarById(UUID id) throws CarNotFoundException {
+    public Car findCarById(UUID carId)  {
         for (Car car : cars) {
-            if (car.getId().equals(id)) {
+            if (car.getId().equals(carId)) {
                 return car;
             }
         }
-        throw new CarNotFoundException("Car with id %s not found", id);
-
+        return null;
     }
 
 

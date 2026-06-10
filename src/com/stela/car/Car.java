@@ -53,9 +53,12 @@ public class Car {
 
     @Override
     public String toString() {
-        String electric = isElectric ? " / Electric/ " : "/ Not Electric/ ";
-        return "\n" + id + " / " + brand.getBrand() + electric + " / plates '"
-                + regNumber + "' /  " + rentalPricePerDay + "$/day";
+        return "Car{" +
+                "id=" + id +
+                ", regNumber='" + regNumber + '\'' +
+                ", rentalPricePerDay=" + rentalPricePerDay +
+                ", brand=" + brand +
+                ", isElectric=" + isElectric +
+                '}';
     }
-
 }

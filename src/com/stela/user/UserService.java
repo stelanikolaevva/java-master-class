@@ -8,10 +8,13 @@ public class UserService {
     /**
      * @param id - user id
      * @return the user entity
-     * @throws UserNotFoundException if the user is not found
      */
-    public User findUserById(UUID id) throws UserNotFoundException {
-        return userDao.findUserById(id);
+    public User findUserById(UUID id) {
+        User user = userDao.findUserById(id);
+        if (user == null) {
+            throw new UserNotFoundException("User with id %s not found", id);
+        }
+        return user;
     }
 
     /**

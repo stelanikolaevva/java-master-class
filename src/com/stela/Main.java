@@ -1,23 +1,18 @@
 package com.stela;
 
-import com.stela.booking.BookingData;
-import com.stela.booking.BookingNotFoundException;
+import com.stela.booking.CarBooking;
 import com.stela.booking.CarBookingService;
-import com.stela.car.Car;
-import com.stela.car.CarAlreadyBookedException;
-import com.stela.car.CarNotFoundException;
 import com.stela.car.CarService;
-import com.stela.user.User;
-import com.stela.user.UserNotFoundException;
 import com.stela.user.UserService;
 
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.UUID;
 
-import static com.stela.util.ArraysUtil.printFormatedArrayOutput;
-import static com.stela.util.DatesUtil.isStartDateAfterEndDate;
-import static com.stela.util.MenuUtil.*;
+import static com.stela.util.MenuUtil.goBack;
+import static com.stela.util.MenuUtil.printMenuAndSelectOption;
+import static com.stela.util.MenuUtil.readCarBookingRequestInput;
+import static com.stela.util.MenuUtil.readUUIDOrGoBack;
+import static com.stela.util.MenuUtil.selectOption;
 
 public class Main {
     //Users
@@ -39,80 +34,67 @@ public class Main {
 
     public static void main(String[] args) {
 
-        var scanner = new Scanner(System.in);
         System.out.println("=== Welcome to Car Bookings ===");
 
-        var option = printMenuAndSelectOption(scanner);
+        var option = printMenuAndSelectOption();
         while (option != 8) {
             boolean validOption = true;
             switch (option) {
-                case 1 -> bookACar(scanner);
-                case 2 -> deleteBooking(scanner);
-                case 3 -> printUserBookings(scanner);
+                case 1 -> bookACar();
+                case 2 -> deleteBooking();
+                case 3 -> printUserBookings();
                 case 4 -> printAllBookings();
-                case 5 -> printAvailableCars(scanner);
-                case 6 -> printAvailableElectricCars(scanner);
-                case 7 -> printAllUsers();  //done
+                case 5 -> printAvailableCars();
+                case 6 -> printAvailableElectricCars();
+                case 7 -> printAllUsers();
                 default -> {
                     System.out.println("Invalid option. Please try again:");
                     validOption = false;
-                    option = selectOption(scanner);
+                    option = selectOption();
                 }
             }
             if (validOption) {
-                goBack(scanner);
-                option = printMenuAndSelectOption(scanner);
+                goBack();
+                option = printMenuAndSelectOption();
             }
         }
         System.out.println("Goodbye!");
     }
 
-    private static void bookACar(Scanner scanner) {
-        BookingData bookingData = readBookingDataInput(scanner);
+    private static void bookACar() {
+        CarBooking bookingRequest = readCarBookingRequestInput();
+        UUID savedBookingId = carBookingService.bookCar(bookingRequest);
 
-        try {
-            if (isStartDateAfterEndDate(bookingData.getStartDate(), bookingData.getEndDate())) {
-                throw new IllegalArgumentException("End date must be after start date!");
-            }
-
-            User user = userService.findUserById(bookingData.getUserId());
-            Car car = carService.getCarById(bookingData.getCarId());
-
-            carBookingService.bookCar(user, car, bookingData.getStartDate(), bookingData.getEndDate());
-        } catch (UserNotFoundException | CarNotFoundException | IllegalArgumentException
-                 | CarAlreadyBookedException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-        System.out.println("Car Booking Added Successfully!");
+        System.out.println("Car Booking Added Successfully With Id: " + savedBookingId);
 
     }
 
-    private static void deleteBooking(Scanner scanner) {
-        System.out.println("Enter Booking UUID or q to stop:");
-        var bookingId = readUUIDOrQuit(scanner);
-        if (bookingId != null) {
-            try {
-                carBookingService.deleteBooking(bookingId);
-                System.out.println("Booking cancelled successfully!");
-            } catch (BookingNotFoundException e) {
-                System.out.println(e.getMessage());
-            }
+    private static void deleteBooking() {
+        System.out.println("Enter Booking UUID or q to go back:");
+        var bookingId = readUUIDOrGoBack();
+
+        var isDeleted = carBookingService.deleteBooking(bookingId);
+        if (isDeleted) {
+            System.out.println("Booking cancelled successfully!");
+        } else {
+            System.out.println("Booking cancellation failed!");
         }
     }
 
-    private static void printUserBookings(Scanner scanner) {
-        System.out.println("Enter User UUID or q to stop:");
-        var userId = readUUIDOrQuit(scanner);
+
+    private static void printUserBookings() {
+        System.out.println("Enter User UUID or q to go back:");
+        var userId = readUUIDOrGoBack();
+
         if (userId != null) {
-            try {
-                User userById = userService.findUserById(userId);
-                System.out.println("--- All cars booked by " + userById.getName() + " ---");
+            var userById = userService.findUserById(userId);
+            System.out.println("--- All cars booked by " + userById.getName() + " ---");
 
-                var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);
-                printFormatedArrayOutput(Arrays.toString(carsForSpecificUser));
-            } catch (UserNotFoundException | CarNotFoundException e) {
-                System.out.println(e.getMessage());
+            var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userById);
+            if (carsForSpecificUser.length > 0) {
+                System.out.println(Arrays.toString(carsForSpecificUser));
+            } else {
+                System.out.println("No cars present!");
             }
         }
     }
@@ -122,35 +104,32 @@ public class Main {
 
         var allBookings = carBookingService.getBookings();
         if (allBookings.length > 0) {
-            printFormatedArrayOutput(Arrays.toString(allBookings));
+            System.out.println(Arrays.toString(allBookings));
         } else {
             System.out.println("No bookings up to this moment.");
         }
     }
 
-    private static void printAvailableCars(Scanner scanner) {
+    private static void printAvailableCars() {
         System.out.println("--- Available Cars For Selected Period ---");
 
-        System.out.println("Please select the start date (dd/mm/yyyy) for the period you are searching for:");
-        LocalDate startDate = readLocalDate(scanner);
-
-        System.out.println("Please select the end date (dd/mm/yyyy) for the period you are searching for:");
-        LocalDate endDate = readLocalDate(scanner);
-
-        printFormatedArrayOutput(Arrays.toString(carBookingService.getAvailableCars(startDate, endDate)));
+        var cars = carService.getCars();
+        if (cars.length > 0) {
+            System.out.println(Arrays.toString(cars));
+        } else {
+            System.out.println("No cars present!");
+        }
     }
 
-
-    private static void printAvailableElectricCars(Scanner scanner) {
+    private static void printAvailableElectricCars() {
         System.out.println("--- Available Electric Cars For Selected Period ---");
 
-        System.out.println("Please select the start date (dd/mm/yyyy) for the period you are searching for:");
-        LocalDate startDate = readLocalDate(scanner);
-
-        System.out.println("Please select the end date (dd/mm/yyyy) for the period you are searching for:");
-        LocalDate endDate = readLocalDate(scanner);
-
-        printFormatedArrayOutput(Arrays.toString(carBookingService.getAvailableElectricCars(startDate, endDate)));
+        var availableElectricCars = carService.getAvailableElectricCars();
+        if (availableElectricCars.length > 0) {
+            System.out.println(Arrays.toString(availableElectricCars));
+        } else {
+            System.out.println("No cars present!");
+        }
     }
 
     private static void printAllUsers() {
@@ -158,7 +137,7 @@ public class Main {
 
         var usersInSystem = userService.getAllUsers();
         if (usersInSystem.length > 0) {
-            printFormatedArrayOutput(Arrays.toString(usersInSystem));
+            System.out.println(Arrays.toString(usersInSystem));
         } else {
             System.out.println("No users present!");
         }
