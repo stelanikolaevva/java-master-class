@@ -50,8 +50,7 @@ public class CarBookingDao {
     /**
      * @param booking - the booking id that will be set to status CANCELLED
      */
-    public boolean deleteBooking(CarBooking booking) {
+    public void deleteBooking(CarBooking booking) {
         booking.setStatus(BookingStatus.CANCELLED);
-        return true;
     }
 }

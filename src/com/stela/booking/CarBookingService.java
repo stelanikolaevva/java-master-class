@@ -35,7 +35,8 @@ public class CarBookingService {
             throw new BookingNotFoundException("Booking with id %s not found", bookingId);
         }
 
-        return carBookingDao.deleteBooking(bookingById);
+        carBookingDao.deleteBooking(bookingById);
+        return true;
     }
 
 
