@@ -1,5 +1,6 @@
 package com.stela.user;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserDao {
@@ -25,14 +26,14 @@ public class UserDao {
 
     /**
      * @param userId of the user
-     * @return the user with selected id or else null
+     * @return an Optional with the user, or empty if none
      */
-    public User findUserById(UUID userId) {
+    public Optional<User> findUserById(UUID userId) {
         for (User user : users) {
             if (user.getId().equals(userId)) {
-                return user;
+                return Optional.of(user);
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

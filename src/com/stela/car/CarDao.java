@@ -1,6 +1,7 @@
 package com.stela.car;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CarDao {
@@ -41,15 +42,15 @@ public class CarDao {
 
     /**
      * @param carId - the id of the car
-     * @return the car for the selected id or else null
+     * @return an Optional with the car, or empty if none
      */
-    public Car findCarById(UUID carId)  {
+    public Optional<Car> findCarById(UUID carId)  {
         for (Car car : cars) {
             if (car.getId().equals(carId)) {
-                return car;
+                return Optional.of(car);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 

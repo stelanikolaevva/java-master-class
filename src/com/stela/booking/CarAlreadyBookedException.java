@@ -1,7 +1,7 @@
-package com.stela.car;
+package com.stela.booking;
 
 /**
- * Custom checked exception thrown when the car is already book for the desired dates
+ * Custom unchecked exception thrown when the car is already booked
  */
 public class CarAlreadyBookedException extends RuntimeException {
 

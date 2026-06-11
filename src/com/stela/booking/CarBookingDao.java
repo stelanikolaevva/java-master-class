@@ -1,40 +1,34 @@
 package com.stela.booking;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CarBookingDao {
-    private static int maxIndex = 1;
+    private static int maxIndex = 16;
     private static CarBooking[] carBookings = new CarBooking[maxIndex];
 
     private static int currentIndex = 0;
 
     /**
-     * @return an array of bookings
+     * @return an array of all added bookings
      */
     public CarBooking[] getBookings() {
-        CarBooking[] actualBookings = new CarBooking[currentIndex];
-        if (currentIndex != 0) {
-            for (int i = 0; i < currentIndex; i++) {
-                actualBookings[i] = carBookings[i];
-            }
-        }
-        return actualBookings;
+        return Arrays.copyOf(carBookings, currentIndex);
     }
 
     /**
      * @param id the booking id
-     * @return the Booking object with that id or null if not present
+     * @return an Optional with the booking, or empty if none
      */
-    public CarBooking findBookingById(UUID id) {
+    public Optional<CarBooking> findBookingById(UUID id) {
         for (CarBooking booking : carBookings) {
             if (booking != null && booking.getId().equals(id)) {
-                return booking;
+                return Optional.of(booking);
             }
         }
-        return null;
+        return Optional.empty();
     }
-
 
     /**
      * @param carBooking the new booking that will be added in the system
@@ -47,10 +41,17 @@ public class CarBookingDao {
         carBookings[currentIndex++] = carBooking;
     }
 
+
     /**
-     * @param booking - the booking id that will be set to status CANCELLED
+     * @param bookingId that will be canceled
+     * @return true if booking is canceled
      */
-    public void deleteBooking(CarBooking booking) {
-        booking.setStatus(BookingStatus.CANCELLED);
+    public boolean deleteBooking(UUID bookingId) {
+        Optional<CarBooking> bookingById = findBookingById(bookingId);
+        if (bookingById.isPresent() && bookingById.get().getStatus() == BookingStatus.ACTIVE) {
+            bookingById.get().setStatus(BookingStatus.CANCELLED);
+            return true;
+        }
+        return false;
     }
 }

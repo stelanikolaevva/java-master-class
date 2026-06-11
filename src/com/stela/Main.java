@@ -2,11 +2,9 @@ package com.stela;
 
 import com.stela.booking.CarBooking;
 import com.stela.booking.CarBookingService;
-import com.stela.car.CarService;
 import com.stela.user.UserService;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 import static com.stela.util.MenuUtil.goBack;
 import static com.stela.util.MenuUtil.printMenuAndSelectOption;
@@ -29,7 +27,6 @@ public class Main {
 
 
     private static final UserService userService = new UserService();
-    private static final CarService carService = new CarService();
     private static final CarBookingService carBookingService = new CarBookingService();
 
     public static void main(String[] args) {
@@ -63,15 +60,21 @@ public class Main {
 
     private static void bookACar() {
         CarBooking bookingRequest = readCarBookingRequestInput();
-        UUID savedBookingId = carBookingService.bookCar(bookingRequest);
+        if (bookingRequest == null) {
+            return;
+        }
 
-        System.out.println("Car Booking Added Successfully With Id: " + savedBookingId);
-
+        var newBooking = carBookingService.bookCar(bookingRequest);
+        System.out.println("Car Booking Added Successfully With Id: " + newBooking.getId());
     }
 
     private static void deleteBooking() {
-        System.out.println("Enter Booking UUID or q to go back:");
+        System.out.println("Enter Booking UUID or b to go back:");
+
         var bookingId = readUUIDOrGoBack();
+        if (bookingId == null) {
+            return;
+        }
 
         var isDeleted = carBookingService.deleteBooking(bookingId);
         if (isDeleted) {
@@ -79,24 +82,28 @@ public class Main {
         } else {
             System.out.println("Booking cancellation failed!");
         }
+
     }
 
 
     private static void printUserBookings() {
-        System.out.println("Enter User UUID or q to go back:");
+        System.out.println("Enter User UUID or b to go back:");
+
         var userId = readUUIDOrGoBack();
-
-        if (userId != null) {
-            var userById = userService.findUserById(userId);
-            System.out.println("--- All cars booked by " + userById.getName() + " ---");
-
-            var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userById);
-            if (carsForSpecificUser.length > 0) {
-                System.out.println(Arrays.toString(carsForSpecificUser));
-            } else {
-                System.out.println("No cars present!");
-            }
+        if (userId == null) {
+            return;
         }
+
+        var userById = userService.findUserById(userId);
+        System.out.println("--- All cars booked by " + userById.getName() + " ---");
+
+        var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);
+        if (carsForSpecificUser.length > 0) {
+            System.out.println(Arrays.toString(carsForSpecificUser));
+        } else {
+            System.out.println("No cars present!");
+        }
+
     }
 
     private static void printAllBookings() {
@@ -111,9 +118,9 @@ public class Main {
     }
 
     private static void printAvailableCars() {
-        System.out.println("--- Available Cars For Selected Period ---");
+        System.out.println("--- Available Cars ---");
 
-        var cars = carService.getCars();
+        var cars = carBookingService.getAllAvailableCars();
         if (cars.length > 0) {
             System.out.println(Arrays.toString(cars));
         } else {
@@ -122,9 +129,9 @@ public class Main {
     }
 
     private static void printAvailableElectricCars() {
-        System.out.println("--- Available Electric Cars For Selected Period ---");
+        System.out.println("--- Available Electric Cars---");
 
-        var availableElectricCars = carService.getAvailableElectricCars();
+        var availableElectricCars = carBookingService.getAvailableElectricCars();
         if (availableElectricCars.length > 0) {
             System.out.println(Arrays.toString(availableElectricCars));
         } else {

@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class MenuUtil {
-    private static final Scanner SCANNER = new Scanner (System.in);
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     private final static String MENU = """
             1 - Book Car
@@ -71,7 +71,7 @@ public class MenuUtil {
                 var input = SCANNER.nextLine().trim();
                 if ("b".equalsIgnoreCase(input)) break;
                 else {
-                    id = UUID.fromString(input.trim());
+                    id = UUID.fromString(input);
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("Invalid UUID. Please try again or b to go back:");
@@ -81,42 +81,58 @@ public class MenuUtil {
     }
 
     /**
-     * @return Booking Data object with the inputs from the user
+     * @return Booking Data object with the inputs from the user or null if user backs out
      */
     public static CarBooking readCarBookingRequestInput() {
-        System.out.println("Enter User UUID or q to quit:");
+        System.out.println("Enter User UUID or b to go back:");
         var userID = readUUIDOrGoBack();
+        if (userID == null) {
+            return null;
+        }
 
-        System.out.println("Enter Car UUID or q to quit:");
-        var carSelection = readUUIDOrGoBack();
+        System.out.println("Enter Car UUID or b to go back:");
+        var carSelectionId = readUUIDOrGoBack();
+        if (carSelectionId == null) {
+            return null;
+        }
 
-        System.out.println("Enter start date (dd/MM/yyyy):");
+        System.out.println("Enter start date (dd/MM/yyyy) or b to go back:");
         var startDate = readLocalDate();
+        if (startDate == null) {
+            return null;
+        }
 
-        System.out.println("Enter end date (dd/MM/yyyy):");
+        System.out.println("Enter end date (dd/MM/yyyy) or b to go back:");
         var endDate = readLocalDate();
-        return new CarBooking(userID, carSelection, startDate, endDate);
+        if (endDate == null) {
+            return null;
+        }
+        return new CarBooking(userID, carSelectionId, startDate, endDate);
     }
 
     /**
-     * @return a valid LocalDate inputted from the user
+     * @return a future-or-today date, or null if the user entered 'b' to go back
      */
     public static LocalDate readLocalDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        while (true) {
+        LocalDate localDate = null;
+        while (localDate == null) {
             try {
                 String line = SCANNER.nextLine().trim();
-                LocalDate date = LocalDate.parse(line, formatter);
-                if (date.isBefore(LocalDate.now())) {
-                    System.out.println("Date must be in the future. Please try again:");
-                    continue;
+                if ("b".equalsIgnoreCase(line)) break;
+                else {
+                    localDate = LocalDate.parse(line, formatter);
+                    if (localDate.isBefore(LocalDate.now())) {
+                        System.out.println("Date must not be in the past. Please try again:");
+                        continue;
+                    }
+                    return localDate;
                 }
-                return date;
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid date. Please try again:");
             }
         }
+        return localDate;
     }
 
 }

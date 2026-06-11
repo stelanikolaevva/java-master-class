@@ -1,5 +1,6 @@
 package com.stela.user;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserService {
@@ -10,11 +11,11 @@ public class UserService {
      * @return the user entity
      */
     public User findUserById(UUID id) {
-        User user = userDao.findUserById(id);
-        if (user == null) {
+        Optional<User> user = userDao.findUserById(id);
+        if (user.isEmpty()) {
             throw new UserNotFoundException("User with id %s not found", id);
         }
-        return user;
+        return user.get();
     }
 
     /**

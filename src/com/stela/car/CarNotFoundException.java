@@ -3,7 +3,7 @@ package com.stela.car;
 import java.util.UUID;
 
 /**
- * Custom checked exception thrown when no such car is found
+ * Custom unchecked exception thrown when no such car is found
  */
 public class CarNotFoundException extends RuntimeException {
 
