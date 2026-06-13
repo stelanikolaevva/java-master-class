@@ -2,6 +2,7 @@ package com.stela;
 
 import com.stela.booking.CarBooking;
 import com.stela.booking.CarBookingService;
+import com.stela.user.UserNotFoundException;
 import com.stela.user.UserService;
 
 import java.util.Arrays;
@@ -85,7 +86,6 @@ public class Main {
 
     }
 
-
     private static void printUserBookings() {
         System.out.println("Enter User UUID or b to go back:");
 
@@ -94,7 +94,9 @@ public class Main {
             return;
         }
 
-        var userById = userService.findUserById(userId);
+        var userById = userService.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User with id %s not found", userId));
+
         System.out.println("--- All cars booked by " + userById.getName() + " ---");
 
         var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);

@@ -17,17 +17,10 @@ public class UserDao {
         };
     }
 
-    /**
-     * @return an array of all users
-     */
     public User[] getUsers() {
         return users;
     }
 
-    /**
-     * @param userId of the user
-     * @return an Optional with the user, or empty if none
-     */
     public Optional<User> findUserById(UUID userId) {
         for (User user : users) {
             if (user.getId().equals(userId)) {

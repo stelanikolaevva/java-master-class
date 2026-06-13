@@ -10,17 +10,10 @@ public class CarBookingDao {
 
     private static int currentIndex = 0;
 
-    /**
-     * @return an array of all added bookings
-     */
     public CarBooking[] getBookings() {
         return Arrays.copyOf(carBookings, currentIndex);
     }
 
-    /**
-     * @param id the booking id
-     * @return an Optional with the booking, or empty if none
-     */
     public Optional<CarBooking> findBookingById(UUID id) {
         for (CarBooking booking : carBookings) {
             if (booking != null && booking.getId().equals(id)) {
@@ -30,9 +23,6 @@ public class CarBookingDao {
         return Optional.empty();
     }
 
-    /**
-     * @param carBooking the new booking that will be added in the system
-     */
     public void saveBooking(CarBooking carBooking) {
         if (currentIndex == maxIndex) {
             maxIndex = maxIndex * 2;
@@ -41,11 +31,6 @@ public class CarBookingDao {
         carBookings[currentIndex++] = carBooking;
     }
 
-
-    /**
-     * @param bookingId that will be canceled
-     * @return true if booking is canceled
-     */
     public boolean deleteBooking(UUID bookingId) {
         Optional<CarBooking> bookingById = findBookingById(bookingId);
         if (bookingById.isPresent() && bookingById.get().getStatus() == BookingStatus.ACTIVE) {

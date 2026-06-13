@@ -23,19 +23,11 @@ public class MenuUtil {
             Please select an option to continue:
             """;
 
-    /**
-     * Print the menu and returns the option
-     *
-     * @return selected number option from the user
-     */
     public static int printMenuAndSelectOption() {
         System.out.println(MENU);
         return selectOption();
     }
 
-    /**
-     * @return selected number option from the user
-     */
     public static int selectOption() {
         while (true) {
             String input = SCANNER.nextLine().trim();
@@ -47,9 +39,6 @@ public class MenuUtil {
         }
     }
 
-    /**
-     * Waits for the user to select B or b to go back to main menu
-     */
     public static void goBack() {
         //Option to go back to main menu
         System.out.println("Press b to go back to main menu:");
@@ -61,9 +50,6 @@ public class MenuUtil {
         }
     }
 
-    /**
-     * @return a valid UUID inputted from the user or null if the user quit
-     */
     public static UUID readUUIDOrGoBack() {
         UUID id = null;
         while (id == null) {
@@ -80,9 +66,6 @@ public class MenuUtil {
         return id;
     }
 
-    /**
-     * @return Booking Data object with the inputs from the user or null if user backs out
-     */
     public static CarBooking readCarBookingRequestInput() {
         System.out.println("Enter User UUID or b to go back:");
         var userID = readUUIDOrGoBack();
@@ -110,9 +93,6 @@ public class MenuUtil {
         return new CarBooking(userID, carSelectionId, startDate, endDate);
     }
 
-    /**
-     * @return a future-or-today date, or null if the user entered 'b' to go back
-     */
     public static LocalDate readLocalDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate localDate = null;
@@ -134,5 +114,4 @@ public class MenuUtil {
         }
         return localDate;
     }
-
 }

@@ -33,17 +33,10 @@ public class CarDao {
         };
     }
 
-    /**
-     * @return all cars in the system
-     */
     public Car[] getCars() {
         return cars;
     }
 
-    /**
-     * @param carId - the id of the car
-     * @return an Optional with the car, or empty if none
-     */
     public Optional<Car> findCarById(UUID carId)  {
         for (Car car : cars) {
             if (car.getId().equals(carId)) {
@@ -52,6 +45,4 @@ public class CarDao {
         }
         return Optional.empty();
     }
-
-
 }
