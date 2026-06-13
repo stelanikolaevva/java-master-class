@@ -1,6 +1,7 @@
 package com.stela.car;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 
 public class CarDao {
@@ -32,27 +33,16 @@ public class CarDao {
         };
     }
 
-    /**
-     * @return all cars in the system
-     */
     public Car[] getCars() {
         return cars;
     }
 
-    /**
-     * @param id - the id of the car
-     * @return the car for the selected id
-     * @throws CarNotFoundException - if the car is not found
-     */
-    public Car findCarById(UUID id) throws CarNotFoundException {
+    public Optional<Car> findCarById(UUID carId)  {
         for (Car car : cars) {
-            if (car.getId().equals(id)) {
-                return car;
+            if (car.getId().equals(carId)) {
+                return Optional.of(car);
             }
         }
-        throw new CarNotFoundException("Car with id %s not found", id);
-
+        return Optional.empty();
     }
-
-
 }

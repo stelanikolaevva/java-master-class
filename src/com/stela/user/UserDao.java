@@ -1,5 +1,6 @@
 package com.stela.user;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class UserDao {
@@ -16,25 +17,16 @@ public class UserDao {
         };
     }
 
-    /**
-     * @return an array of all users
-     */
     public User[] getUsers() {
         return users;
     }
 
-    /**
-     * @param userId of the user
-     * @return the user with selected id
-     * @throws UserNotFoundException - when the user is not found
-     */
-    public User findUserById(UUID userId) throws UserNotFoundException {
+    public Optional<User> findUserById(UUID userId) {
         for (User user : users) {
             if (user.getId().equals(userId)) {
-                return user;
+                return Optional.of(user);
             }
         }
-
-        throw new UserNotFoundException("User with id %s not found", userId);
+        return Optional.empty();
     }
 }

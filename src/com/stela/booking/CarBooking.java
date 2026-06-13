@@ -1,33 +1,29 @@
 package com.stela.booking;
 
-import com.stela.car.Car;
-import com.stela.user.User;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
 public class CarBooking {
     private UUID id;
-    private User user;
-    private Car car;
+    private UUID userId;
+    private UUID carId;
     private LocalDate startDate;
     private LocalDate endDate;
     private BigDecimal price;
     private BookingStatus status;
     private LocalDateTime bookedAt;
 
-    public CarBooking(User user,
-                      Car car,
+    public CarBooking(UUID userId,
+                      UUID carId,
                       LocalDate startDate,
                       LocalDate endDate,
                       BigDecimal price) {
         this.id = UUID.randomUUID();
-        this.user = user;
-        this.car = car;
+        this.userId = userId;
+        this.carId = carId;
         this.startDate = startDate;
         this.endDate = endDate;
         this.price = price;
@@ -35,16 +31,26 @@ public class CarBooking {
         this.bookedAt = LocalDateTime.now();
     }
 
+    public CarBooking(UUID userId,
+                      UUID carId,
+                      LocalDate startDate,
+                      LocalDate endDate){
+        this.userId = userId;
+        this.carId = carId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public UUID getId() {
         return id;
     }
 
-    public User getUser() {
-        return user;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public Car getCar() {
-        return car;
+    public UUID getCarId() {
+        return carId;
     }
 
     public LocalDate getStartDate() {
@@ -72,25 +78,28 @@ public class CarBooking {
     }
 
     @Override
-    public String toString() {
-        return "id: " + id + "\n" +
-                "Booked by: " + user.getName() + "\n" +
-                "Car: " + car.getRegNumber() + "\n" +
-                "From: " + startDate + ", to: " + endDate + "\n" +
-                "Total cost: " + price + "$\n" +
-                "Status: " + status + "\n" +
-                "Booked at: " + bookedAt.format(DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")) + "\n\n";
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         CarBooking booking = (CarBooking) o;
-        return Objects.equals(id, booking.id) && Objects.equals(user, booking.user) && Objects.equals(car, booking.car) && Objects.equals(startDate, booking.startDate) && Objects.equals(endDate, booking.endDate) && Objects.equals(price, booking.price) && status == booking.status && Objects.equals(bookedAt, booking.bookedAt);
+        return Objects.equals(id, booking.id) && Objects.equals(userId, booking.userId) && Objects.equals(carId, booking.carId) && Objects.equals(startDate, booking.startDate) && Objects.equals(endDate, booking.endDate) && Objects.equals(price, booking.price) && status == booking.status && Objects.equals(bookedAt, booking.bookedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, car, startDate, endDate, price, status, bookedAt);
+        return Objects.hash(id, userId, carId, startDate, endDate, price, status, bookedAt);
+    }
+
+    @Override
+    public String toString() {
+        return "CarBooking{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", carId=" + carId +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", price=" + price +
+                ", status=" + status +
+                ", bookedAt=" + bookedAt +
+                '}';
     }
 }

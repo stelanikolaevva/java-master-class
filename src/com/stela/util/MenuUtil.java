@@ -1,6 +1,6 @@
 package com.stela.util;
 
-import com.stela.booking.BookingData;
+import com.stela.booking.CarBooking;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class MenuUtil {
-    public final static int MAX_INDEX = 16;
+    private static final Scanner SCANNER = new Scanner(System.in);
 
     private final static String MENU = """
             1 - Book Car
@@ -23,24 +23,14 @@ public class MenuUtil {
             Please select an option to continue:
             """;
 
-    /**
-     * Print the menu and returns the option
-     *
-     * @param scanner the scanner instance used to capture user input
-     * @return selected number option from the user
-     */
-    public static int printMenuAndSelectOption(Scanner scanner) {
+    public static int printMenuAndSelectOption() {
         System.out.println(MENU);
-        return selectOption(scanner);
+        return selectOption();
     }
 
-    /**
-     * @param scanner the scanner instance used to capture user input
-     * @return selected number option from the user
-     */
-    public static int selectOption(Scanner scanner) {
+    public static int selectOption() {
         while (true) {
-            String input = scanner.nextLine().trim();
+            String input = SCANNER.nextLine().trim();
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
@@ -49,81 +39,79 @@ public class MenuUtil {
         }
     }
 
-    /**
-     * Waits for the user to select B or b to go back to main menu
-     *
-     * @param scanner the scanner instance used to capture user input
-     */
-    public static void goBack(Scanner scanner) {
+    public static void goBack() {
         //Option to go back to main menu
         System.out.println("Press b to go back to main menu:");
         while (true) {
-            var input = scanner.nextLine().trim();
+            var input = SCANNER.nextLine().trim();
             if (input.equalsIgnoreCase("b")) {
                 break;
             }
         }
     }
 
-    /**
-     * @param scanner the scanner instance used to capture user input
-     * @return a valid UUID inputted from the user or null if the user quit
-     */
-    public static UUID readUUIDOrQuit(Scanner scanner) {
+    public static UUID readUUIDOrGoBack() {
         UUID id = null;
         while (id == null) {
             try {
-                var input = scanner.nextLine().trim();
-                if ("q".equalsIgnoreCase(input)) break;
+                var input = SCANNER.nextLine().trim();
+                if ("b".equalsIgnoreCase(input)) break;
                 else {
-                    id = UUID.fromString(input.trim());
+                    id = UUID.fromString(input);
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid UUID. Please try again or q to quit:");
+                System.out.println("Invalid UUID. Please try again or b to go back:");
             }
         }
         return id;
     }
 
-    /**
-     * @param scanner the scanner instance used to capture user input
-     * @return Booking Data object with the inputs from the user
-     */
-    public static BookingData readBookingDataInput(Scanner scanner) {
-        System.out.println("Enter User UUID or q to quit:");
-        var userID = readUUIDOrQuit(scanner);
+    public static CarBooking readCarBookingRequestInput() {
+        System.out.println("Enter User UUID or b to go back:");
+        var userID = readUUIDOrGoBack();
+        if (userID == null) {
+            return null;
+        }
 
-        System.out.println("Enter Car UUID or q to quit:");
-        var carSelection = readUUIDOrQuit(scanner);
+        System.out.println("Enter Car UUID or b to go back:");
+        var carSelectionId = readUUIDOrGoBack();
+        if (carSelectionId == null) {
+            return null;
+        }
 
-        System.out.println("Enter start date (dd/MM/yyyy):");
-        var startDate = readLocalDate(scanner);
+        System.out.println("Enter start date (dd/MM/yyyy) or b to go back:");
+        var startDate = readLocalDate();
+        if (startDate == null) {
+            return null;
+        }
 
-        System.out.println("Enter end date (dd/MM/yyyy):");
-        var endDate = readLocalDate(scanner);
-        return new BookingData(userID, carSelection, startDate, endDate);
+        System.out.println("Enter end date (dd/MM/yyyy) or b to go back:");
+        var endDate = readLocalDate();
+        if (endDate == null) {
+            return null;
+        }
+        return new CarBooking(userID, carSelectionId, startDate, endDate);
     }
 
-    /**
-     * @param scanner the scanner instance used to capture user input
-     * @return a valid LocalDate inputted from the user
-     */
-    public static LocalDate readLocalDate(Scanner scanner) {
+    public static LocalDate readLocalDate() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-        while (true) {
+        LocalDate localDate = null;
+        while (localDate == null) {
             try {
-                String line = scanner.nextLine().trim();
-                LocalDate date = LocalDate.parse(line, formatter);
-                if (date.isBefore(LocalDate.now())) {
-                    System.out.println("Date must be in the future. Please try again:");
-                    continue;
+                String line = SCANNER.nextLine().trim();
+                if ("b".equalsIgnoreCase(line)) break;
+                else {
+                    localDate = LocalDate.parse(line, formatter);
+                    if (localDate.isBefore(LocalDate.now())) {
+                        System.out.println("Date must not be in the past. Please try again:");
+                        continue;
+                    }
+                    return localDate;
                 }
-                return date;
             } catch (DateTimeParseException e) {
                 System.out.println("Invalid date. Please try again:");
             }
         }
+        return localDate;
     }
-
 }

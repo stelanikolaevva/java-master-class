@@ -34,6 +34,9 @@ public class User {
 
     @Override
     public String toString() {
-        return "\nId: " + id + " -> " + name;
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
