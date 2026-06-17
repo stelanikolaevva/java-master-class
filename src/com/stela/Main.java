@@ -1,10 +1,18 @@
 package com.stela;
 
 import com.stela.booking.CarBooking;
+import com.stela.booking.CarBookingDao;
+import com.stela.booking.CarBookingFileDataAccessService;
 import com.stela.booking.CarBookingService;
+import com.stela.car.CarArrayDataAccessService;
+import com.stela.car.CarDao;
+import com.stela.car.CarService;
+import com.stela.user.UserArrayDataAccessService;
+import com.stela.user.UserDao;
 import com.stela.user.UserNotFoundException;
 import com.stela.user.UserService;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import static com.stela.util.MenuUtil.goBack;
@@ -12,6 +20,8 @@ import static com.stela.util.MenuUtil.printMenuAndSelectOption;
 import static com.stela.util.MenuUtil.readCarBookingRequestInput;
 import static com.stela.util.MenuUtil.readUUIDOrGoBack;
 import static com.stela.util.MenuUtil.selectOption;
+
+//import com.stela.booking.CarBookingFileDataAccessService;
 
 public class Main {
     //Users
@@ -27,8 +37,16 @@ public class Main {
     // 46e4d6b4-9f1f-4995-9aa2-621179eec17f - B 1122 OK
 
 
-    private static final UserService userService = new UserService();
-    private static final CarBookingService carBookingService = new CarBookingService();
+    private static final UserDao userDao = new UserArrayDataAccessService();
+    private static final UserService userService = new UserService(userDao);
+
+    private static final CarDao carDao = new CarArrayDataAccessService();
+    private static final CarService carService = new CarService(carDao);
+
+    private static final CarBookingDao carBookingDao = new CarBookingFileDataAccessService(Path.of("booking.dat"));
+    // private static final CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
+    private static final CarBookingService carBookingService = new CarBookingService(carBookingDao, carService, userService);
+
 
     public static void main(String[] args) {
 
@@ -86,6 +104,7 @@ public class Main {
 
     }
 
+
     private static void printUserBookings() {
         System.out.println("Enter User UUID or b to go back:");
 
@@ -94,9 +113,7 @@ public class Main {
             return;
         }
 
-        var userById = userService.findUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User with id %s not found", userId));
-
+        var userById = userService.findUserById(userId).orElseThrow(() -> new UserNotFoundException("User not found!", userId));
         System.out.println("--- All cars booked by " + userById.getName() + " ---");
 
         var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);

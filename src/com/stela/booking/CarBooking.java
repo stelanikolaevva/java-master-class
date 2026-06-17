@@ -1,12 +1,17 @@
 package com.stela.booking;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public class CarBooking {
+public class CarBooking implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private UUID userId;
     private UUID carId;
@@ -34,7 +39,7 @@ public class CarBooking {
     public CarBooking(UUID userId,
                       UUID carId,
                       LocalDate startDate,
-                      LocalDate endDate){
+                      LocalDate endDate) {
         this.userId = userId;
         this.carId = carId;
         this.startDate = startDate;
