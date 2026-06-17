@@ -21,8 +21,6 @@ import static com.stela.util.MenuUtil.readCarBookingRequestInput;
 import static com.stela.util.MenuUtil.readUUIDOrGoBack;
 import static com.stela.util.MenuUtil.selectOption;
 
-//import com.stela.booking.CarBookingFileDataAccessService;
-
 public class Main {
     //Users
     // 28d59322-2f01-4794-9f07-fae11a1a7a03 - Leo
