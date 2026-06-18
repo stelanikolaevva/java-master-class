@@ -44,19 +44,15 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
     @Override
     public boolean deleteBooking(UUID bookingId) {
         CarBooking[] allBookings = findAll();
-        CarBooking[] remaining = new CarBooking[allBookings.length];
 
-        int count = 0;
         for (CarBooking booking : allBookings) {
-            if (!booking.getId().equals(bookingId)) { // if we don't have a match
-                remaining[count] = booking; // copy it
+            if (booking.getId().equals(bookingId) && booking.getStatus() == BookingStatus.ACTIVE) {
+                booking.setStatus(BookingStatus.CANCELLED);
+                writeAll(allBookings);
+                return true;
             }
         }
-        if (count == allBookings.length) {
-            return false;                     // nothing matched
-        }
-        writeAll(Arrays.copyOf(remaining, count));
-        return true;
+        return false;
     }
 
     private CarBooking[] findAll() {
