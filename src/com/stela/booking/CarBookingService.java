@@ -16,9 +16,15 @@ import java.util.UUID;
 import static com.stela.util.DatesUtil.isValidBookingPeriod;
 
 public class CarBookingService {
-    private final CarBookingDao carBookingDao = new CarBookingDao();
-    private final CarService carService = new CarService();
-    private final UserService userService = new UserService();
+    private final CarBookingDao carBookingDao;
+    private final CarService carService;
+    private final UserService userService;
+
+    public CarBookingService(CarBookingDao carBookingDao, CarService carService, UserService userService) {
+        this.carBookingDao = carBookingDao;
+        this.carService = carService;
+        this.userService = userService;
+    }
 
     public CarBooking[] getBookings() {
         return carBookingDao.getBookings();
