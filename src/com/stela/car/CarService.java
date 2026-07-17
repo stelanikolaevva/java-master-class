@@ -1,5 +1,6 @@
 package com.stela.car;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public class CarService {
         return carDao.findCarById(id);
     }
 
-    public Car[] getCars() {
+    public List<Car> getCars() {
         return carDao.getCars();
     }
 }

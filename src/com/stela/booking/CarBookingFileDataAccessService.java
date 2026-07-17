@@ -5,7 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,13 +18,13 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
     }
 
     @Override
-    public CarBooking[] getBookings() {
+    public List<CarBooking> getBookings() {
         return findAll();
     }
 
     @Override
     public Optional<CarBooking> findBookingById(UUID id) {
-        CarBooking[] carBookings = findAll();
+        List<CarBooking> carBookings = findAll();
 
         for (CarBooking booking : carBookings) {
             if (booking != null && booking.getId().equals(id)) {
@@ -35,15 +36,15 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
 
     @Override
     public void saveBooking(CarBooking carBooking) {
-        CarBooking[] current = findAll();
-        CarBooking[] updated = Arrays.copyOf(current, current.length + 1);
-        updated[current.length] = carBooking;
-        writeAll(updated);
+        List<CarBooking> allBookings = findAll();
+        allBookings.add(carBooking);
+
+        writeAll(allBookings);
     }
 
     @Override
     public boolean deleteBooking(UUID bookingId) {
-        CarBooking[] allBookings = findAll();
+        List<CarBooking> allBookings = findAll();
 
         for (CarBooking booking : allBookings) {
             if (booking.getId().equals(bookingId) && booking.getStatus() == BookingStatus.ACTIVE) {
@@ -55,21 +56,21 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
         return false;
     }
 
-    private CarBooking[] findAll() {
+    private List<CarBooking> findAll() {
         try {
             if (Files.notExists(path) || Files.size(path) == 0) {
-                return new CarBooking[0];
+                return new ArrayList<>();
             }
 
             try (var in = new ObjectInputStream(Files.newInputStream(path))) {
-                return (CarBooking[]) in.readObject();
+                return (List<CarBooking>) in.readObject();
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
             throw new BookingPersistenceException("Error occurred while loading the file" + e.getMessage());
         }
     }
 
-    private void writeAll(CarBooking[] bookings) {
+    private void writeAll(List<CarBooking> bookings) {
         try (var out = new ObjectOutputStream(Files.newOutputStream(path))) {
             out.writeObject(bookings);
         } catch (IOException e) {

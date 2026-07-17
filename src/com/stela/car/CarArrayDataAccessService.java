@@ -1,15 +1,16 @@
 package com.stela.car;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class CarArrayDataAccessService implements CarDao {
-    private static final Car[] cars;
+    private static final List<Car> cars;
 
     //Pre-Seed data
     static {
-        cars = new Car[]{
+        cars = List.of(
                 new Car(UUID.fromString("d6992eaa-8724-4abe-a9fa-b12d4b04edcb"),
                         "B 1310 CH",
                         new BigDecimal("23.99"),
@@ -29,12 +30,11 @@ public class CarArrayDataAccessService implements CarDao {
                         "B 1122 OK",
                         new BigDecimal("27.99"),
                         Brand.AUDI,
-                        false)
-        };
+                        false));
     }
 
     @Override
-    public Car[] getCars() {
+    public List<Car> getCars() {
         return cars;
     }
 

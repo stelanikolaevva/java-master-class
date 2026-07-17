@@ -1,10 +1,11 @@
 package com.stela.booking;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface CarBookingDao {
-    CarBooking[] getBookings();
+    List<CarBooking> getBookings();
 
     Optional<CarBooking> findBookingById(UUID id);
 

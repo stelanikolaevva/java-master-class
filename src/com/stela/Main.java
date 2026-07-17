@@ -13,7 +13,6 @@ import com.stela.user.UserNotFoundException;
 import com.stela.user.UserService;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static com.stela.util.MenuUtil.goBack;
 import static com.stela.util.MenuUtil.printMenuAndSelectOption;
@@ -115,8 +114,8 @@ public class Main {
         System.out.println("--- All cars booked by " + userById.getName() + " ---");
 
         var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);
-        if (carsForSpecificUser.length > 0) {
-            System.out.println(Arrays.toString(carsForSpecificUser));
+        if (!carsForSpecificUser.isEmpty()) {
+            System.out.println(carsForSpecificUser);
         } else {
             System.out.println("No cars present!");
         }
@@ -127,8 +126,8 @@ public class Main {
         System.out.println("--- All current bookings ---");
 
         var allBookings = carBookingService.getBookings();
-        if (allBookings.length > 0) {
-            System.out.println(Arrays.toString(allBookings));
+        if (!allBookings.isEmpty()) {
+            System.out.println(allBookings);
         } else {
             System.out.println("No bookings up to this moment.");
         }
@@ -138,8 +137,8 @@ public class Main {
         System.out.println("--- Available Cars ---");
 
         var cars = carBookingService.getAllAvailableCars();
-        if (cars.length > 0) {
-            System.out.println(Arrays.toString(cars));
+        if (!cars.isEmpty()) {
+            System.out.println(cars);
         } else {
             System.out.println("No cars present!");
         }
@@ -149,8 +148,8 @@ public class Main {
         System.out.println("--- Available Electric Cars---");
 
         var availableElectricCars = carBookingService.getAvailableElectricCars();
-        if (availableElectricCars.length > 0) {
-            System.out.println(Arrays.toString(availableElectricCars));
+        if (!availableElectricCars.isEmpty()) {
+            System.out.println(availableElectricCars);
         } else {
             System.out.println("No cars present!");
         }
@@ -160,8 +159,8 @@ public class Main {
         System.out.println("--- Users in system ---");
 
         var usersInSystem = userService.getAllUsers();
-        if (usersInSystem.length > 0) {
-            System.out.println(Arrays.toString(usersInSystem));
+        if (!usersInSystem.isEmpty()) {
+            System.out.println(usersInSystem);
         } else {
             System.out.println("No users present!");
         }

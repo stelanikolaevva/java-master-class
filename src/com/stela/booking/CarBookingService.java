@@ -10,6 +10,8 @@ import com.stela.user.UserService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,7 +28,7 @@ public class CarBookingService {
         this.userService = userService;
     }
 
-    public CarBooking[] getBookings() {
+    public List<CarBooking> getBookings() {
         return carBookingDao.getBookings();
     }
 
@@ -35,7 +37,7 @@ public class CarBookingService {
     }
 
     public CarBooking bookCar(CarBooking bookingRequest) {
-        CarBooking[] bookings = carBookingDao.getBookings();
+        List<CarBooking> bookings = carBookingDao.getBookings();
 
         User user = userService.findUserById(bookingRequest.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User with id %s not found", bookingRequest.getUserId()));
@@ -61,32 +63,28 @@ public class CarBookingService {
         return carBooking;
     }
 
-    public Car[] getCarsForSpecificUser(UUID userId) {
-        CarBooking[] bookings = carBookingDao.getBookings();
-        int userCarsCount = getUserCarsCount(bookings, userId);
-        Car[] carsForUser = new Car[userCarsCount];
+    public List<Car> getCarsForSpecificUser(UUID userId) {
+        List<CarBooking> bookings = carBookingDao.getBookings();
+        List<Car> carsForUser = new ArrayList<>();
 
-        int index = 0;
         for (CarBooking carBooking : bookings) {
             if (carBooking.getUserId().equals(userId)) {
                 Optional<Car> carById = carService.getCarById(carBooking.getCarId());
-                if (carById.isPresent()) {
-                    carsForUser[index++] = carById.get();
-                }
+                carById.ifPresent(carsForUser::add);
             }
         }
         return carsForUser;
     }
 
-    public Car[] getAllAvailableCars() {
+    public List<Car> getAllAvailableCars() {
         return getAvailableCars(false);
     }
 
-    public Car[] getAvailableElectricCars() {
+    public List<Car> getAvailableElectricCars() {
         return getAvailableCars(true);
     }
 
-    private boolean isCarAvailableForPeriod(CarBooking[] allBookings, UUID carId, LocalDate startDate, LocalDate endDate) {
+    private boolean isCarAvailableForPeriod(List<CarBooking> allBookings, UUID carId, LocalDate startDate, LocalDate endDate) {
         for (CarBooking booking : allBookings) {
             if (booking.getCarId().equals(carId) && booking.getStatus().equals(BookingStatus.ACTIVE)) {
 
@@ -102,41 +100,20 @@ public class CarBookingService {
         return true; // if there are no booking then the car is free
     }
 
-    private int getUserCarsCount(CarBooking[] bookings, UUID userId) {
-        int count = 0;
-        for (CarBooking b : bookings) {
-            if (b.getUserId().equals(userId)) {
-                count++;
-            }
-        }
-        return count;
-    }
+    private List<Car> getAvailableCars(boolean isElectricOnly) {
+        List<Car> cars = carService.getCars();
+        List<CarBooking> carBookings = carBookingDao.getBookings();
 
-    private Car[] getAvailableCars(boolean isElectricOnly) {
-        Car[] cars = carService.getCars();
-        CarBooking[] carBookings = carBookingDao.getBookings();
+        List<Car> availableCars = new ArrayList<>();
 
-        int carsCount = getCarsCount(carBookings, cars, isElectricOnly);
-        Car[] availableCars = new Car[carsCount];
-
-        int i = 0;
         for (Car car : cars) {
             if (isElectricOnly && !car.isElectric()) continue;
-            if (hasNoActiveBooking(carBookings, car.getId())) availableCars[i++] = car;
+            if (hasNoActiveBooking(carBookings, car.getId())) availableCars.add(car);
         }
         return availableCars;
     }
 
-    private int getCarsCount(CarBooking[] bookings, Car[] cars, boolean isElectricOnly) {
-        int count = 0;
-        for (Car car : cars) {
-            if (isElectricOnly && !car.isElectric()) continue;
-            if (hasNoActiveBooking(bookings, car.getId())) count++;
-        }
-        return count;
-    }
-
-    private boolean hasNoActiveBooking(CarBooking[] bookings, UUID carId) {
+    private boolean hasNoActiveBooking(List<CarBooking>  bookings, UUID carId) {
         for (CarBooking b : bookings) {
             if (b.getCarId().equals(carId) && b.getStatus() == BookingStatus.ACTIVE) {
                 return false;
