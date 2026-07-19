@@ -10,10 +10,10 @@ import com.stela.user.UserService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.stela.util.DatesUtil.isValidBookingPeriod;
 
@@ -64,16 +64,11 @@ public class CarBookingService {
     }
 
     public List<Car> getCarsForSpecificUser(UUID userId) {
-        List<CarBooking> bookings = carBookingDao.getBookings();
-        List<Car> carsForUser = new ArrayList<>();
-
-        for (CarBooking carBooking : bookings) {
-            if (carBooking.getUserId().equals(userId)) {
-                Optional<Car> carById = carService.getCarById(carBooking.getCarId());
-                carById.ifPresent(carsForUser::add);
-            }
-        }
-        return carsForUser;
+        return carBookingDao.getBookings().stream()
+                .filter(booking -> booking.getUserId().equals(userId))
+                .map(booking -> carService.getCarById(booking.getCarId()))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     public List<Car> getAllAvailableCars() {
@@ -85,40 +80,23 @@ public class CarBookingService {
     }
 
     private boolean isCarAvailableForPeriod(List<CarBooking> allBookings, UUID carId, LocalDate startDate, LocalDate endDate) {
-        for (CarBooking booking : allBookings) {
-            if (booking.getCarId().equals(carId) && booking.getStatus().equals(BookingStatus.ACTIVE)) {
-
-                //we already are checking if the end date is after start date and that start day is in the future or today
-                boolean hasNoOverlap = endDate.isBefore(booking.getStartDate())
-                        || startDate.isAfter(booking.getEndDate());
-
-                if (!hasNoOverlap) {
-                    return false;
-                }
-            }
-        }
-        return true; // if there are no booking then the car is free
+        return allBookings.stream()
+                .filter(booking -> booking.getCarId().equals(carId))
+                .filter(booking -> booking.getStatus().equals(BookingStatus.ACTIVE))
+                .allMatch(b -> endDate.isBefore(b.getStartDate()) || startDate.isAfter(b.getEndDate()));
     }
 
     private List<Car> getAvailableCars(boolean isElectricOnly) {
-        List<Car> cars = carService.getCars();
         List<CarBooking> carBookings = carBookingDao.getBookings();
 
-        List<Car> availableCars = new ArrayList<>();
-
-        for (Car car : cars) {
-            if (isElectricOnly && !car.isElectric()) continue;
-            if (hasNoActiveBooking(carBookings, car.getId())) availableCars.add(car);
-        }
-        return availableCars;
+        return carService.getCars().stream()
+                .filter(car -> !isElectricOnly || car.isElectric())
+                .filter(car -> hasNoActiveBooking(carBookings, car.getId()))
+                .collect(Collectors.toList());
     }
 
     private boolean hasNoActiveBooking(List<CarBooking>  bookings, UUID carId) {
-        for (CarBooking b : bookings) {
-            if (b.getCarId().equals(carId) && b.getStatus() == BookingStatus.ACTIVE) {
-                return false;
-            }
-        }
-        return true;
+        return bookings.stream()
+                .noneMatch(b -> b.getCarId().equals(carId) && b.getStatus() == BookingStatus.ACTIVE);
     }
 }

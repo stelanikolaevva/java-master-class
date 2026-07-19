@@ -19,44 +19,42 @@ public class CarBookingFileDataAccessService implements CarBookingDao {
 
     @Override
     public List<CarBooking> getBookings() {
-        return findAll();
+        return getAllBookings();
     }
 
     @Override
     public Optional<CarBooking> findBookingById(UUID id) {
-        List<CarBooking> carBookings = findAll();
-
-        for (CarBooking booking : carBookings) {
-            if (booking != null && booking.getId().equals(id)) {
-                return Optional.of(booking);
-            }
-        }
-        return Optional.empty();
+        return getAllBookings().stream()
+                .filter(carBooking -> carBooking.getCarId().equals(id))
+                .findFirst();
     }
 
     @Override
     public void saveBooking(CarBooking carBooking) {
-        List<CarBooking> allBookings = findAll();
+        List<CarBooking> allBookings = getAllBookings();
         allBookings.add(carBooking);
-
         writeAll(allBookings);
     }
 
     @Override
     public boolean deleteBooking(UUID bookingId) {
-        List<CarBooking> allBookings = findAll();
+        List<CarBooking> allBookings = getAllBookings();
 
-        for (CarBooking booking : allBookings) {
-            if (booking.getId().equals(bookingId) && booking.getStatus() == BookingStatus.ACTIVE) {
-                booking.setStatus(BookingStatus.CANCELLED);
-                writeAll(allBookings);
-                return true;
-            }
+        Optional<CarBooking> bookingToCancel = allBookings.stream()
+                .filter(booking -> booking.getId().equals(bookingId))
+                .filter(booking -> booking.getStatus() == BookingStatus.ACTIVE)
+                .findFirst();
+
+        if (bookingToCancel.isEmpty()) {
+            return false;
         }
-        return false;
+
+        bookingToCancel.get().setStatus(BookingStatus.CANCELLED);
+        writeAll(allBookings);
+        return true;
     }
 
-    private List<CarBooking> findAll() {
+    private List<CarBooking> getAllBookings() {
         try {
             if (Files.notExists(path) || Files.size(path) == 0) {
                 return new ArrayList<>();
