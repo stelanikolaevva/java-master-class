@@ -1,18 +1,16 @@
 package com.stela.booking;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class CarBookingArrayDataAccessService implements CarBookingDao {
-    private static int maxIndex = 16;
-    private static CarBooking[] carBookings = new CarBooking[maxIndex];
-
-    private static int currentIndex = 0;
+    private static final List<CarBooking> carBookings = new ArrayList<>();
 
     @Override
-    public CarBooking[] getBookings() {
-        return Arrays.copyOf(carBookings, currentIndex);
+    public List<CarBooking> getBookings() {
+        return carBookings;
     }
 
     @Override
@@ -27,11 +25,7 @@ public class CarBookingArrayDataAccessService implements CarBookingDao {
 
     @Override
     public void saveBooking(CarBooking carBooking) {
-        if (currentIndex == maxIndex) {
-            maxIndex = maxIndex * 2;
-            carBookings = Arrays.copyOf(carBookings, maxIndex);
-        }
-        carBookings[currentIndex++] = carBooking;
+        carBookings.add(carBooking);
     }
 
     @Override
