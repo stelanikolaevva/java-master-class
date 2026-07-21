@@ -40,11 +40,8 @@ public class CarArrayDataAccessService implements CarDao {
 
     @Override
     public Optional<Car> findCarById(UUID carId) {
-        for (Car car : cars) {
-            if (car.getId().equals(carId)) {
-                return Optional.of(car);
-            }
-        }
-        return Optional.empty();
+        return cars.stream()
+                .filter(car -> car.getId().equals(carId))
+                .findFirst();
     }
 }

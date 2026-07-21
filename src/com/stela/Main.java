@@ -115,7 +115,7 @@ public class Main {
 
         var carsForSpecificUser = carBookingService.getCarsForSpecificUser(userId);
         if (!carsForSpecificUser.isEmpty()) {
-            System.out.println(carsForSpecificUser);
+            carsForSpecificUser.forEach(System.out::println);
         } else {
             System.out.println("No cars present!");
         }
@@ -127,7 +127,7 @@ public class Main {
 
         var allBookings = carBookingService.getBookings();
         if (!allBookings.isEmpty()) {
-            System.out.println(allBookings);
+           allBookings.forEach(System.out::println);
         } else {
             System.out.println("No bookings up to this moment.");
         }
@@ -138,7 +138,7 @@ public class Main {
 
         var cars = carBookingService.getAllAvailableCars();
         if (!cars.isEmpty()) {
-            System.out.println(cars);
+            cars.forEach(System.out::println);
         } else {
             System.out.println("No cars present!");
         }
@@ -149,7 +149,7 @@ public class Main {
 
         var availableElectricCars = carBookingService.getAvailableElectricCars();
         if (!availableElectricCars.isEmpty()) {
-            System.out.println(availableElectricCars);
+            availableElectricCars.forEach(System.out::println);
         } else {
             System.out.println("No cars present!");
         }
@@ -160,7 +160,7 @@ public class Main {
 
         var usersInSystem = userService.getAllUsers();
         if (!usersInSystem.isEmpty()) {
-            System.out.println(usersInSystem);
+            usersInSystem.forEach(System.out::println);
         } else {
             System.out.println("No users present!");
         }
