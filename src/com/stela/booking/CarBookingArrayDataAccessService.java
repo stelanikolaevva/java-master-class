@@ -16,7 +16,7 @@ public class CarBookingArrayDataAccessService implements CarBookingDao {
     @Override
     public Optional<CarBooking> findBookingById(UUID id) {
         return carBookings.stream()
-                .filter(carBooking -> carBooking.getCarId().equals(id))
+                .filter(carBooking -> carBooking.getId().equals(id))
                 .findFirst();
     }
 
