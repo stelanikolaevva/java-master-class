@@ -1,14 +1,15 @@
 package com.stela;
 
+
 import com.stela.booking.CarBooking;
 import com.stela.booking.CarBookingDao;
 import com.stela.booking.CarBookingFileDataAccessService;
 import com.stela.booking.CarBookingService;
-import com.stela.car.CarArrayDataAccessService;
 import com.stela.car.CarDao;
+import com.stela.car.CarFakerDataAccessService;
 import com.stela.car.CarService;
-import com.stela.user.UserArrayDataAccessService;
 import com.stela.user.UserDao;
+import com.stela.user.UserFakerDataAccessService;
 import com.stela.user.UserNotFoundException;
 import com.stela.user.UserService;
 
@@ -34,13 +35,15 @@ public class Main {
     // 46e4d6b4-9f1f-4995-9aa2-621179eec17f - B 1122 OK
 
 
-    private static final UserDao userDao = new UserArrayDataAccessService();
+    //private static final UserDao userDao = new UserArrayDataAccessService();
+    private static final UserDao userDao = new UserFakerDataAccessService();
     private static final UserService userService = new UserService(userDao);
 
-    private static final CarDao carDao = new CarArrayDataAccessService();
+    //private static final CarDao carDao = new CarArrayDataAccessService();
+    private static final CarDao carDao = new CarFakerDataAccessService();
     private static final CarService carService = new CarService(carDao);
 
-    private static final CarBookingDao carBookingDao = new CarBookingFileDataAccessService(Path.of("booking.dat"));
+    private static final CarBookingDao carBookingDao = new CarBookingFileDataAccessService(Path.of("src/main/resources/booking.dat"));
     // private static final CarBookingDao carBookingDao = new CarBookingArrayDataAccessService();
     private static final CarBookingService carBookingService = new CarBookingService(carBookingDao, carService, userService);
 
