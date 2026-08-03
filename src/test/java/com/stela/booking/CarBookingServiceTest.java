@@ -190,7 +190,7 @@ class CarBookingServiceTest {
     }
 
     @Test
-    void shouldTrowWhenNoExistingUserWhenBooking() {
+    void shouldThrowWhenNoExistingUserWhenBooking() {
         //given
         when(carBookingDao.getBookings()).thenReturn(new ArrayList<>());
         when(userService.findUserById(userId)).thenReturn(Optional.empty());
@@ -205,7 +205,7 @@ class CarBookingServiceTest {
     }
 
     @Test
-    void shouldTrowWhenNoExistingCarWhenBooking() {
+    void shouldThrowWhenNoExistingCarWhenBooking() {
         //given
         when(carBookingDao.getBookings()).thenReturn(new ArrayList<>());
         when(userService.findUserById(userId)).thenReturn(Optional.of(
@@ -221,7 +221,7 @@ class CarBookingServiceTest {
     }
 
     @Test
-    void shouldTrowWhenNoValidDatesWhenBooking() {
+    void shouldThrowWhenNoValidDatesWhenBooking() {
         // given
         CarBooking invalidBookingRequest = new CarBooking(userId, carId, startDate, endDate.minusDays(10));
 
@@ -239,7 +239,7 @@ class CarBookingServiceTest {
     }
 
     @Test
-    void shouldTrowWhenNoAvailableCarWhenBooking() {
+    void shouldThrowWhenNoAvailableCarWhenBooking() {
         // given
         when(carBookingDao.getBookings()).thenReturn(List.of(existingBooking));
         when(userService.findUserById(userId)).thenReturn(Optional.of(new User(userId, "UserName")));
