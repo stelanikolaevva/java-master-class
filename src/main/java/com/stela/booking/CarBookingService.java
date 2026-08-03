@@ -1,5 +1,6 @@
 package com.stela.booking;
 
+
 import com.stela.car.Car;
 import com.stela.car.CarNotFoundException;
 import com.stela.car.CarService;
@@ -16,6 +17,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.stela.util.DatesUtil.isValidBookingPeriod;
+
 
 public class CarBookingService {
     private final CarBookingDao carBookingDao;
