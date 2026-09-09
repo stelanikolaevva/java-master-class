@@ -1,0 +1,30 @@
+[
+  {
+    "id": "92f9e8e7-4126-4a55-90c6-d4977c4d90b3",
+    "isElectric": false,
+    "rentalPricePerDay": 23.99,
+    "regNumber": "B 1310 CH",
+    "brand": "MERCEDES"
+  },
+  {
+    "id": "00ba7493-1e63-4dea-b7be-34060e73047f",
+    "isElectric": true,
+    "rentalPricePerDay": 33.99,
+    "regNumber": "CB 2320 CH",
+    "brand": "MERCEDES"
+  },
+  {
+    "id": "d40d949f-c13c-43e6-af6d-d6d235833d9f",
+    "isElectric": false,
+    "rentalPricePerDay": 33.99,
+    "regNumber": "CA 9919 PP",
+    "brand": "MERCEDES"
+  },
+  {
+    "id": "c7664df0-6fa6-4b38-8185-cb14fe061556",
+    "isElectric": true,
+    "rentalPricePerDay": 43.99,
+    "regNumber": "PB 1320 KO",
+    "brand": "MERCEDES"
+  }
+]

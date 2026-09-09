@@ -1,15 +1,30 @@
 package com.stela.user;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 import java.util.UUID;
 
-public class User {
+@Entity
+@Table(name = "app_user")
+public class AppUser {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false)
     private String name;
 
-    public User(UUID id, String name) {
-        this.id = id;
+    public AppUser(String name) {
         this.name = name;
+    }
+
+    public AppUser() {
     }
 
     public UUID getId() {
@@ -23,8 +38,8 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name);
+        AppUser appUser = (AppUser) o;
+        return Objects.equals(id, appUser.id) && Objects.equals(name, appUser.name);
     }
 
     @Override
