@@ -14,35 +14,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class AppUserServiceTest {
 
     @Mock
-    private UserDao userDao;
+    private AppUserRepository userDao;
     @InjectMocks
-    private UserService userService;
+    private AppUserService appUserService;
 
     private final UUID userId = UUID.randomUUID();
-    private final User mockUser = new User(userId, "MockUser");
+    private final AppUser mockAppUser = new AppUser("MockUser");
 
     @Test
     void shouldReturnUserWhenFindById() {
         // given
-        when(userDao.findUserById(userId)).thenReturn(Optional.of(mockUser));
+        when(userDao.findById(userId)).thenReturn(Optional.of(mockAppUser));
 
         // when
-        Optional<User> actual = userService.findUserById(userId);
+        Optional<AppUser> actual = appUserService.findUserById(userId);
 
         // then
-        assertThat(actual).contains(mockUser);
+        assertThat(actual).contains(mockAppUser);
     }
 
     @Test
     void shouldReturnOptionEmptyWhenNoSuchUser() {
         // given
-        when(userDao.findUserById(userId)).thenReturn(Optional.empty());
+        when(userDao.findById(userId)).thenReturn(Optional.empty());
 
         // when
-        Optional<User> actual = userService.findUserById(userId);
+        Optional<AppUser> actual = appUserService.findUserById(userId);
 
         // then
         assertThat(actual).isEmpty();
@@ -51,22 +51,22 @@ class UserServiceTest {
     @Test
     void shouldReturnAllUsersWhenGetAllUsers() {
         // given
-        when(userDao.getUsers()).thenReturn(List.of(mockUser, mockUser, mockUser));
+        when(userDao.findAll()).thenReturn(List.of(mockAppUser, mockAppUser, mockAppUser));
 
         // when
-        List<User> actual = userService.getAllUsers();
+        List<AppUser> actual = appUserService.getAllUsers();
 
         // then
-        assertThat(actual).containsExactly(mockUser, mockUser, mockUser);
+        assertThat(actual).containsExactly(mockAppUser, mockAppUser, mockAppUser);
     }
 
     @Test
     void shouldReturnEmptyListWhenNoUsers() {
         // given
-        when(userDao.getUsers()).thenReturn(List.of());
+        when(userDao.findAll()).thenReturn(List.of());
 
         // when
-        List<User> actual = userService.getAllUsers();
+        List<AppUser> actual = appUserService.getAllUsers();
 
         // then
         assertThat(actual).isEmpty();

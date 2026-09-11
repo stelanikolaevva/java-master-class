@@ -1,0 +1,78 @@
+[
+  {
+    "id": "0c84c096-05e8-42ec-90e6-ed2d696aca9c",
+    "appUser": {
+      "name": "Amaya",
+      "id": "1c32fdf4-3a1b-4082-b58b-86bcabf5887a"
+    },
+    "car": {
+      "regNumber": "B 1310 CH",
+      "rentalPricePerDay": 23.99,
+      "brand": "MERCEDES",
+      "isElectric": false,
+      "id": "92f9e8e7-4126-4a55-90c6-d4977c4d90b3"
+    },
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "ACTIVE",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "a6246b38-9583-49db-b788-79076b0a4c24",
+    "appUser": {
+      "name": "Amaya",
+      "id": "1c32fdf4-3a1b-4082-b58b-86bcabf5887a"
+    },
+    "car": {
+      "id": "00ba7493-1e63-4dea-b7be-34060e73047f",
+      "isElectric": true,
+      "rentalPricePerDay": 33.99,
+      "regNumber": "CB 2320 CH",
+      "brand": "MERCEDES"
+    },
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "ACTIVE",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "0c84c096-05e8-42ec-90e6-ed2d696aca9c",
+    "appUser": {
+      "name": "Amaya",
+      "id": "1c32fdf4-3a1b-4082-b58b-86bcabf5887a"
+    },
+    "car": {
+      "regNumber": "B 1310 CH",
+      "rentalPricePerDay": 23.99,
+      "brand": "MERCEDES",
+      "isElectric": false,
+      "id": "92f9e8e7-4126-4a55-90c6-d4977c4d90b3"
+    },
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "CANCELLED",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "0c84c096-05e8-42ec-90e6-ed2d696aca9c",
+    "appUser": {
+      "name": "Amaya",
+      "id": "1c32fdf4-3a1b-4082-b58b-86bcabf5887a"
+    },
+    "car": {
+      "id": "d40d949f-c13c-43e6-af6d-d6d235833d9f",
+      "isElectric": false,
+      "rentalPricePerDay": 33.99,
+      "regNumber": "CA 9919 PP",
+      "brand": "MERCEDES"
+    },
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "COMPLETED",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  }
+]
