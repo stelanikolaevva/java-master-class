@@ -1,22 +1,25 @@
 package com.stela.car;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class CarService {
-    private final CarDao carDao;
+    private final CarRepository carRepository;
 
-    public CarService(CarDao carDao) {
-        this.carDao = carDao;
+    public CarService(CarRepository carRepository) {
+        this.carRepository = carRepository;
     }
 
     public Optional<Car> getCarById(UUID id) {
-        return carDao.findCarById(id);
+        return carRepository.findById(id);
     }
 
     public List<Car> getCars() {
-        return carDao.getCars();
+        return carRepository.findAll();
     }
 }
 
