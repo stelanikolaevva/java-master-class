@@ -3,6 +3,7 @@ package com.stela.booking;
 
 import com.stela.car.Car;
 import com.stela.car.CarNotFoundException;
+import com.stela.car.CarResponse;
 import com.stela.car.CarService;
 import com.stela.user.AppUser;
 import com.stela.user.AppUserNotFoundException;
@@ -14,7 +15,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static com.stela.util.DatesUtil.isValidBookingPeriod;
 
@@ -30,15 +30,15 @@ public class CarBookingService {
         this.appUserService = appUserService;
     }
 
-    public List<CarBooking> getBookings() {
-        return carBookingRepository.findAll();
+    public List<CarBookingResponse> getBookings() {
+        return carBookingRepository.findAll().stream().map(this::mapToBookingResponse).toList();
     }
 
     public void deleteBooking(UUID bookingId) {
         carBookingRepository.deleteById(bookingId);
     }
 
-    public CarBooking bookCar(CarBookingRequest bookingRequest) {
+    public CarBookingResponse bookCar(CarBookingRequest bookingRequest) {
         List<CarBooking> bookings = carBookingRepository.findAll();
 
         AppUser appUser = appUserService.findUserById(bookingRequest.userId())
@@ -62,19 +62,34 @@ public class CarBookingService {
         CarBooking carBooking = new CarBooking(appUser, car, bookingRequest.startDate(), bookingRequest.endDate(), totalCostForCar);
         carBookingRepository.save(carBooking);
 
-        return carBooking;
+        return mapToBookingResponse(carBooking);
     }
 
-    public List<CarBooking> getBookingsForSpecificUser(UUID userId) {
-        return carBookingRepository.findByAppUserId(userId);
+    public List<CarBookingResponse> getBookingsForSpecificUser(UUID userId) {
+        return carBookingRepository.findByAppUserId(userId).stream().map(this::mapToBookingResponse).toList();
     }
 
-    public List<Car> getAllAvailableCars() {
+    public List<CarResponse> getAllAvailableCars() {
         return getAvailableCars(false);
     }
 
-    public List<Car> getAvailableElectricCars() {
+    public List<CarResponse> getAvailableElectricCars() {
         return getAvailableCars(true);
+    }
+
+    public List<CarResponse> getAvailableCarsForSpecificPeriod(boolean isElectricOnly, LocalDate startDate, LocalDate endDate) {
+        List<CarBooking> carBookings = carBookingRepository.findAll();
+
+        return carService.getCars().stream()
+                .filter(car -> !isElectricOnly || car.isElectric())
+                .filter(car -> isCarAvailableForPeriod(carBookings, car.getId(), startDate, endDate))
+                .map(car ->
+                        new CarResponse(car.getId(),
+                                car.getRegNumber(),
+                                car.getRentalPricePerDay(),
+                                car.getBrand(),
+                                car.isElectric()))
+                .toList();
     }
 
     private boolean isCarAvailableForPeriod(List<CarBooking> allBookings, UUID carId, LocalDate startDate, LocalDate endDate) {
@@ -84,17 +99,38 @@ public class CarBookingService {
                 .allMatch(b -> endDate.isBefore(b.getStartDate()) || startDate.isAfter(b.getEndDate()));
     }
 
-    private List<Car> getAvailableCars(boolean isElectricOnly) {
+    private List<CarResponse> getAvailableCars(boolean isElectricOnly) {
         List<CarBooking> carBookings = carBookingRepository.findAll();
 
         return carService.getCars().stream()
                 .filter(car -> !isElectricOnly || car.isElectric())
                 .filter(car -> hasNoActiveBooking(carBookings, car.getId()))
-                .collect(Collectors.toList());
+                .map(car ->
+                        new CarResponse(car.getId(),
+                                car.getRegNumber(),
+                                car.getRentalPricePerDay(),
+                                car.getBrand(),
+                                car.isElectric()))
+                .toList();
     }
 
-    private boolean hasNoActiveBooking(List<CarBooking>  bookings, UUID carId) {
+    private boolean hasNoActiveBooking(List<CarBooking> bookings, UUID carId) {
         return bookings.stream()
-                .noneMatch(b -> b.getCar().getId().equals(carId) && b.getStatus() == BookingStatus.ACTIVE);
+                .noneMatch(b ->
+                        b.getCar().getId().equals(carId)
+                                && b.getStatus() == BookingStatus.ACTIVE);
+    }
+
+    private CarBookingResponse mapToBookingResponse(CarBooking booking) {
+        return new CarBookingResponse(
+                booking.getId(),
+                booking.getAppUser().getName(),
+                booking.getCar().getRegNumber(),
+                booking.getCar().getBrand(),
+                booking.getStartDate(),
+                booking.getEndDate(),
+                booking.getPrice(),
+                booking.getStatus(),
+                booking.getBookedAt());
     }
 }

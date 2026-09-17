@@ -4,8 +4,10 @@ import com.stela.booking.CarBookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -20,30 +22,24 @@ public class CarController {
 
     @GetMapping("/available")
     public ResponseEntity<List<CarResponse>> getAvailableCars() {
-        List<CarResponse> response = bookingService.getAllAvailableCars().stream()
-                .map(car ->
-                        new CarResponse(car.getId(),
-                                car.getRegNumber(),
-                                car.getRentalPricePerDay(),
-                                car.getBrand(),
-                                car.isElectric()))
-                .toList();
-
+        List<CarResponse> response = bookingService.getAllAvailableCars();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/available/electric")
     public ResponseEntity<List<CarResponse>> getAvailableElectricCars() {
-        List<CarResponse> response = bookingService.getAvailableElectricCars().stream()
-                .map(car ->
-                        new CarResponse(car.getId(),
-                                car.getRegNumber(),
-                                car.getRentalPricePerDay(),
-                                car.getBrand(),
-                                car.isElectric()))
-                .toList();
+        List<CarResponse> response = bookingService.getAvailableElectricCars();
 
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/available-for-specific-period")
+    public ResponseEntity<List<CarResponse>> getAvailableForTimePeriod(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        return ResponseEntity.ok(bookingService.getAvailableCarsForSpecificPeriod(false, startDate,endDate));
+    }
+
+    @GetMapping("/available-electrics-for-specific-period")
+    public ResponseEntity<List<CarResponse>> getAvailableElectricsForTimePeriod(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        return ResponseEntity.ok(bookingService.getAvailableCarsForSpecificPeriod(false, startDate,endDate));
+    }
 }

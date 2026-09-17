@@ -1,5 +1,6 @@
 package com.stela.user;
 
+import com.stela.util.MockDataUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ class AppUserServiceTest {
     private AppUserService appUserService;
 
     private final UUID userId = UUID.randomUUID();
-    private final AppUser mockAppUser = new AppUser("MockUser");
+    private final AppUser mockAppUser = MockDataUtil.getUsers().getFirst();
 
     @Test
     void shouldReturnUserWhenFindById() {
@@ -51,13 +52,14 @@ class AppUserServiceTest {
     @Test
     void shouldReturnAllUsersWhenGetAllUsers() {
         // given
-        when(userDao.findAll()).thenReturn(List.of(mockAppUser, mockAppUser, mockAppUser));
+        when(userDao.findAll()).thenReturn(MockDataUtil.getUsers());
 
         // when
-        List<AppUser> actual = appUserService.getAllUsers();
+        List<AppUserResponse> actual = appUserService.getAllUsers();
 
         // then
-        assertThat(actual).containsExactly(mockAppUser, mockAppUser, mockAppUser);
+
+        assertThat(actual).containsAll(MockDataUtil.getUsersResponse());
     }
 
     @Test
@@ -66,7 +68,7 @@ class AppUserServiceTest {
         when(userDao.findAll()).thenReturn(List.of());
 
         // when
-        List<AppUser> actual = appUserService.getAllUsers();
+        List<AppUserResponse> actual = appUserService.getAllUsers();
 
         // then
         assertThat(actual).isEmpty();

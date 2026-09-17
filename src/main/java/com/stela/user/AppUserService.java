@@ -18,7 +18,10 @@ public class AppUserService {
         return appUserRepository.findById(id);
     }
 
-    public List<AppUser> getAllUsers() {
-        return appUserRepository.findAll();
+    public List<AppUserResponse> getAllUsers() {
+        return appUserRepository.findAll().stream()
+                .map(appUser ->
+                        new AppUserResponse(appUser.getId(), appUser.getName()))
+                .toList();
     }
 }

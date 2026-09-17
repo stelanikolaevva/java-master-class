@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 
 @RestController
 @RequestMapping("api/v1/bookings")
@@ -24,15 +23,13 @@ public class CarBookingController {
 
     @PostMapping
     public ResponseEntity<CarBookingResponse> bookACar(@RequestBody CarBookingRequest carBookingRequest) {
-        CarBooking carBooking = carBookingService.bookCar(carBookingRequest);
+        CarBookingResponse response = carBookingService.bookCar(carBookingRequest);
 
-        return ResponseEntity.ok(mapToBookingResponse().apply(carBooking));
+        return ResponseEntity.ok(response);
     }
     @GetMapping
     public ResponseEntity<List<CarBookingResponse>> getCarBookings() {
-        List<CarBookingResponse> response = carBookingService.getBookings().stream()
-                .map(mapToBookingResponse())
-                .toList();
+        List<CarBookingResponse> response = carBookingService.getBookings();
 
         return ResponseEntity.ok(response);
     }
@@ -46,23 +43,7 @@ public class CarBookingController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CarBookingResponse>> getCarBookingsByUserId(@PathVariable UUID userId) {
-        List<CarBookingResponse> response = carBookingService.getBookingsForSpecificUser(userId).stream()
-                .map(mapToBookingResponse())
-                .toList();
-
+        List<CarBookingResponse> response = carBookingService.getBookingsForSpecificUser(userId);
         return ResponseEntity.ok(response);
-    }
-
-    private Function<CarBooking, CarBookingResponse> mapToBookingResponse() {
-        return (b) -> new CarBookingResponse(
-                b.getId(),
-                b.getAppUser().getName(),
-                b.getCar().getRegNumber(),
-                b.getCar().getBrand(),
-                b.getStartDate(),
-                b.getStartDate(),
-                b.getPrice(),
-                b.getStatus(),
-                b.getBookedAt());
     }
 }

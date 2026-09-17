@@ -19,10 +19,7 @@ public class AppUserController {
 
     @GetMapping
     public ResponseEntity<List<AppUserResponse>> getAllUsers() {
-        List<AppUserResponse> responses = appUserService.getAllUsers().stream()
-                .map(appUser ->
-                        new AppUserResponse(appUser.getId(), appUser.getName()))
-                .toList();
+        List<AppUserResponse> responses = appUserService.getAllUsers();
         return ResponseEntity.ok(responses);
     }
 }
