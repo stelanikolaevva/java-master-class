@@ -1,0 +1,46 @@
+[
+  {
+    "id": "0c84c096-05e8-42ec-90e6-ed2d696aca9c",
+    "userName": "Amaya",
+    "carRegNumber": "B 1310 CH",
+    "carBrand": "MERCEDES",
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "ACTIVE",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "a6246b38-9583-49db-b788-79076b0a4c24",
+    "userName": "Amaya",
+    "carRegNumber": "CB 2320 CH",
+    "carBrand": "MERCEDES",
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "ACTIVE",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "0c84c095-05e8-42ec-90e6-ed2d696aca9c",
+    "userName": "Amaya",
+    "carRegNumber": "B 1310 CH",
+    "carBrand": "MERCEDES",
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "CANCELLED",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  },
+  {
+    "id": "0c84c093-05e8-42ec-90e6-ed2d696aca9c",
+    "userName": "Amaya",
+    "carRegNumber": "CA 9919 PP",
+    "carBrand": "MERCEDES",
+    "startDate": "2026-12-12",
+    "endDate": "2026-12-13",
+    "price": 47.98,
+    "status": "COMPLETED",
+    "bookedAt": "2026-09-05T11:22:10.008807"
+  }
+]

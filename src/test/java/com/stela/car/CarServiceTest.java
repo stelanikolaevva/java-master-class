@@ -18,17 +18,17 @@ import static org.mockito.Mockito.when;
 class CarServiceTest {
 
     @Mock
-    private CarDao carDao;
+    private CarRepository carDao;
     @InjectMocks
     private CarService carService;
 
     private final UUID carId = UUID.randomUUID();
-    private final Car mockCar = new Car(carId, "mockCar", BigDecimal.ONE, Brand.AUDI, true);
+    private final Car mockCar = new Car("mockCar", BigDecimal.ONE, Brand.AUDI, true);
 
     @Test
     void shouldReturnCarWhenFindById() {
         // given
-        when(carDao.findCarById(carId)).thenReturn(Optional.of(mockCar));
+        when(carDao.findById(carId)).thenReturn(Optional.of(mockCar));
 
         // when
         Optional<Car> actual = carService.getCarById(carId);
@@ -40,7 +40,7 @@ class CarServiceTest {
     @Test
     void shouldReturnOptionEmptyWhenNoSuchCar() {
         // given
-        when(carDao.findCarById(carId)).thenReturn(Optional.empty());
+        when(carDao.findById(carId)).thenReturn(Optional.empty());
 
         // when
         Optional<Car> actual = carService.getCarById(carId);
@@ -52,7 +52,7 @@ class CarServiceTest {
     @Test
     void shouldReturnAllCarsWhenGetAllCars() {
         // given
-        when(carDao.getCars()).thenReturn(List.of(mockCar, mockCar, mockCar));
+        when(carDao.findAll()).thenReturn(List.of(mockCar, mockCar, mockCar));
 
         // when
         List<Car> actual = carService.getCars();
@@ -64,7 +64,7 @@ class CarServiceTest {
     @Test
     void shouldReturnEmptyListWhenNoCars() {
         // given
-        when(carDao.getCars()).thenReturn(List.of());
+        when(carDao.findAll()).thenReturn(List.of());
 
         // when
         List<Car> actual = carService.getCars();

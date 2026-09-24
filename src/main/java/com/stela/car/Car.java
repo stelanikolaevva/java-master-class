@@ -1,22 +1,48 @@
 package com.stela.car;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
+
+@Entity
+@Table(name = "car")
 public class Car {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false, unique = true)
     private String regNumber;
+
+    @Column(nullable = false)
     private BigDecimal rentalPricePerDay;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Brand brand;
+
+    @Column(nullable = false)
     private boolean isElectric;
 
-    public Car(UUID id, String regNumber, BigDecimal rentalPricePerDay, Brand brand, boolean isElectric) {
-        this.id = id;
+    public Car(String regNumber, BigDecimal rentalPricePerDay, Brand brand, boolean isElectric) {
         this.regNumber = regNumber;
         this.rentalPricePerDay = rentalPricePerDay;
         this.brand = brand;
         this.isElectric = isElectric;
+    }
+
+    public Car() {
+
     }
 
     public UUID getId() {
